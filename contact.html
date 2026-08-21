@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liên Hệ - Hoàng Thế Long</title>
+    <meta name="description" content="Liên hệ với Hoàng Thế Long để được tư vấn giải pháp AI Marketing miễn phí.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="js/supabase-config.js"></script>
+    <script src="js/ai-api.js"></script>
+    <script src="js/main.js" defer></script>
+    <script src="js/animations.js" defer></script>
+</head>
+<body class="dark-mode">
+
+    <!-- NAVBAR -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a class="nav-logo" href="index.html">HTL</a>
+            <div class="nav-links">
+                <a class="nav-link" href="index.html">Trang chủ</a>
+                <a class="nav-link" href="about.html">Giới thiệu</a>
+                <a class="nav-link" href="services.html">Dịch vụ</a>
+                <a class="nav-link" href="portfolio.html">Dự án</a>
+                <a class="nav-link" href="blog.html">Blog</a>
+                <a class="nav-link active" href="contact.html">Liên hệ</a>
+            </div>
+            <div class="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main style="padding-top: 80px;">
+        <!-- CONTACT -->
+        <section class="section" id="contact">
+            <div class="section-header reveal">
+                <h2 class="section-title">Liên Hệ</h2>
+                <p class="section-subtitle">Sẵn sàng hợp tác? Hãy gửi tin nhắn cho tôi!</p>
+            </div>
+
+            <div class="contact-container">
+                <form class="contact-form reveal" action="https://formsubmit.co/hoangthelongpro.vn@gmail.com" method="POST">
+                    <!-- FormSubmit Configuration -->
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_subject" value="[Website HTL] Tin nhắn mới từ khách hàng!">
+                    <input type="hidden" name="_template" value="table">
+                    <div class="form-group">
+                        <label class="form-label" for="name">Họ và tên</label>
+                        <input type="text" id="name" name="name" class="form-input" required placeholder="Nhập họ và tên">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-input" required placeholder="Nhập email">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="subject">Chủ đề</label>
+                        <input type="text" id="subject" name="subject" class="form-input" placeholder="Nhập chủ đề">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="message">Nội dung</label>
+                        <textarea id="message" name="message" class="form-textarea" required rows="5" placeholder="Nhập nội dung tin nhắn..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-submit">
+                        Gửi tin nhắn <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+
+                <div class="contact-info reveal">
+                    <div class="info-item">
+                        <i class="fa-solid fa-envelope"></i>
+                        <a href="mailto:hoangthelongpro.vn@gmail.com" style="color: inherit; text-decoration: none;">hoangthelongpro.vn@gmail.com</a>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-phone"></i>
+                        <a href="tel:0358500914" style="color: inherit; text-decoration: none;">0358 500 914</a>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>Hà Nội, Việt Nam</span>
+                    </div>
+                    <div class="contact-social">
+                        <a href="https://facebook.com" target="_blank" rel="noopener" class="social-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://zalo.me/0358500914" target="_blank" rel="noopener" class="social-link" aria-label="Zalo"><i class="fa-solid fa-comments"></i></a>
+                        <a href="tel:0358500914" class="social-link" aria-label="Gọi điện"><i class="fa-solid fa-phone"></i></a>
+                        <a href="mailto:hoangthelongpro.vn@gmail.com" class="social-link" aria-label="Gửi Email"><i class="fa-solid fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        <div class="footer-content">
+            <p class="footer-text">© 2026 Hoàng Thế Long. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="index.html">Trang chủ</a> |
+                <a href="services.html">Dịch vụ</a> |
+                <a href="portfolio.html">Dự án</a> |
+                <a href="blog.html">Blog</a> |
+                <a href="contact.html">Liên hệ</a>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://zalo.me/0358500914" target="_blank" rel="noopener" class="zalo-float" aria-label="Chat Zalo ngay">
+        <i class="fa-solid fa-comment-dots"></i>
+        <span>Chat Zalo</span>
+    </a>
+    <button class="back-to-top" aria-label="Back to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+</body>
+</html>
