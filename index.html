@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoàng Thế Long - AI-Driven Marketer | Automation Specialist</title>
+    <meta name="description" content="Hoàng Thế Long - AI-Driven Marketer & Automation Specialist. Tăng x3 hiệu suất marketing bằng AI, Data và tự động hóa.">
+    <meta property="og:title" content="Hoàng Thế Long - AI-Driven Marketer">
+    <meta property="og:description" content="Dùng Dữ liệu để ra quyết định - Dùng AI để x3 hiệu suất marketing.">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="js/supabase-config.js"></script>
+    <script src="js/ai-api.js"></script>
+    <script src="js/main.js" defer></script>
+    <script src="js/animations.js" defer></script>
+    <style>
+        .home-overview { padding: 4rem 0; }
+        .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem; }
+        .cta-section { text-align: center; padding: 5rem 0; background: var(--bg-card); border-radius: var(--border-radius); margin: 4rem 0; position: relative; overflow: hidden; }
+        .cta-section::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%); z-index: 0; }
+        .cta-content { position: relative; z-index: 1; }
+    </style>
+</head>
+<body class="dark-mode page-transition">
+
+    <!-- NAVBAR -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a class="nav-logo" href="index.html">HTL</a>
+            <div class="nav-links">
+                <a class="nav-link active" href="index.html">Trang chủ</a>
+                <a class="nav-link" href="about.html">Giới thiệu</a>
+                <a class="nav-link" href="services.html">Dịch vụ</a>
+                <a class="nav-link" href="portfolio.html">Dự án</a>
+                <a class="nav-link" href="blog.html">Blog</a>
+                <a class="nav-link" href="contact.html">Liên hệ</a>
+            </div>
+            <div class="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- HERO -->
+        <section class="section" id="hero" style="min-height: 100vh; display: flex; align-items: center;">
+            <div class="hero-content reveal">
+                <div class="hero-text">
+                    <h1 class="hero-title">Hoàng Thế Long</h1>
+                    <p class="hero-subtitle">Digital Marketer · AI & Automation Specialist</p>
+                    <p class="hero-tagline">"Dùng Dữ liệu để ra quyết định — Dùng AI để x3 hiệu suất"</p>
+                    <div class="hero-ctas">
+                        <a href="services.html" class="btn btn-primary">Khám phá giải pháp</a>
+                        <a href="portfolio.html" class="btn btn-secondary">Xem dự án</a>
+                    </div>
+                    <div class="hero-social">
+                        <a href="https://facebook.com" target="_blank" rel="noopener" class="social-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://zalo.me/0358500914" target="_blank" rel="noopener" class="social-link" aria-label="Zalo"><i class="fa-solid fa-comments"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TÓM TẮT DỊCH VỤ -->
+        <section class="section home-overview">
+            <div class="section-header reveal">
+                <h2 class="section-title">Giải Pháp Nổi Bật</h2>
+                <p class="section-subtitle">Tối ưu hóa mọi điểm chạm của doanh nghiệp</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card reveal">
+                    <div class="service-icon"><i class="fa-solid fa-code"></i></div>
+                    <h3 class="service-title">Hệ Thống Web Funnel</h3>
+                    <p class="service-desc">Xây dựng Landing Page tự động hóa thu thập lead và tối ưu tỷ lệ chuyển đổi (CRO).</p>
+                </div>
+                <div class="service-card reveal">
+                    <div class="service-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                    <h3 class="service-title">SEO & AI Content</h3>
+                    <p class="service-desc">Kết hợp sức mạnh kỹ thuật SEO và AI để phủ sóng từ khóa trong thời gian cực ngắn.</p>
+                </div>
+                <div class="service-card reveal">
+                    <div class="service-icon"><i class="fa-brands fa-facebook"></i></div>
+                    <h3 class="service-title">Tối Ưu Ads Bằng Data</h3>
+                    <p class="service-desc">Tạm biệt chạy ads theo cảm tính. Áp dụng A/B testing liên tục để vắt kiệt CPA.</p>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 3rem;" class="reveal">
+                <a href="services.html" class="btn btn-secondary">Xem tất cả 6 dịch vụ <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </section>
+
+        <!-- CTA SECTION -->
+        <section class="container">
+            <div class="cta-section reveal">
+                <div class="cta-content">
+                    <h2 style="font-size: 2.5rem; margin-bottom: 1rem; background: var(--gradient-primary); -webkit-background-clip: text; color: transparent;">Bạn đã sẵn sàng để tăng tốc?</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">Đừng để đối thủ bỏ xa bạn trong kỷ nguyên AI. Hãy để tôi giúp bạn xây dựng một hệ thống marketing tự động, thông minh và hiệu quả.</p>
+                    <a href="contact.html" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1.1rem;">Bắt đầu dự án của bạn</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        <div class="footer-content">
+            <p class="footer-text">© 2026 Hoàng Thế Long. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="index.html">Trang chủ</a> |
+                <a href="services.html">Dịch vụ</a> |
+                <a href="portfolio.html">Dự án</a> |
+                <a href="blog.html">Blog</a> |
+                <a href="contact.html">Liên hệ</a>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://zalo.me/0358500914" target="_blank" rel="noopener" class="zalo-float" aria-label="Chat Zalo ngay">
+        <i class="fa-solid fa-comment-dots"></i>
+        <span>Chat Zalo</span>
+    </a>
+    <button class="back-to-top" aria-label="Back to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+</body>
+</html>
