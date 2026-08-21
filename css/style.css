@@ -1,0 +1,168 @@
+/* Design system + base styles */
+:root {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-card-hover: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --accent-1: #4f46e5; /* Indigo */
+  --accent-2: #ec4899; /* Pink */
+  --accent-3: #06b6d4; /* Cyan */
+  --gradient-primary: linear-gradient(135deg, #4f46e5, #ec4899);
+  --gradient-hot: linear-gradient(135deg, #f59e0b, #ec4899);
+  --glow-purple: 0 10px 25px rgba(79, 70, 229, 0.25);
+  --glow-cyan: 0 10px 25px rgba(236, 72, 153, 0.25);
+  --border-radius: 12px;
+  --transition: all 0.3s ease;
+  --container-width: 1200px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap');
+
+/* Reset / Normalize */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+/* Hiệu ứng chuyển trang mượt mà */
+body.page-transition {
+    animation: fadeIn 0.5s ease-in-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+p {
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition);
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Layout */
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section {
+  padding: 5rem 0;
+  min-height: 60vh;
+}
+
+/* Typography */
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 2rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  outline: none;
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  color: #fff;
+  box-shadow: var(--glow-purple);
+}
+
+.btn-primary:hover {
+  box-shadow: var(--glow-cyan);
+  transform: translateY(-3px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 2px solid var(--accent-1);
+}
+
+.btn-secondary:hover {
+  background: rgba(124, 58, 237, 0.1);
+  box-shadow: var(--glow-purple);
+  transform: translateY(-3px);
+}
+
+/* Scrollbar & Selection */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bg-card-hover);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-1);
+}
+
+::selection {
+  background: var(--accent-1);
+  color: #fff;
+}
