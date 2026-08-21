@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự Án - Hoàng Thế Long</title>
+    <meta name="description" content="Các dự án nổi bật: Trường Học 247, VELA Branding, Content Automation, Facebook Ads của Hoàng Thế Long.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="js/supabase-config.js"></script>
+    <script src="js/ai-api.js"></script>
+    <script src="js/main.js" defer></script>
+    <script src="js/animations.js" defer></script>
+    <script src="js/portfolio.js" defer></script>
+</head>
+<body class="dark-mode">
+
+    <!-- NAVBAR -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a class="nav-logo" href="index.html">HTL</a>
+            <div class="nav-links">
+                <a class="nav-link" href="index.html">Trang chủ</a>
+                <a class="nav-link" href="about.html">Giới thiệu</a>
+                <a class="nav-link" href="services.html">Dịch vụ</a>
+                <a class="nav-link active" href="portfolio.html">Dự án</a>
+                <a class="nav-link" href="blog.html">Blog</a>
+                <a class="nav-link" href="contact.html">Liên hệ</a>
+            </div>
+            <div class="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main style="padding-top: 80px;">
+        <!-- PORTFOLIO -->
+        <section class="section" id="portfolio">
+            <div class="section-header reveal">
+                <h2 class="section-title">Dự Án Nổi Bật</h2>
+                <p class="section-subtitle">Những sản phẩm và chiến dịch đã thực hiện</p>
+            </div>
+
+            <div class="portfolio-filters reveal">
+                <button data-filter="all" class="filter-btn active">Tất cả</button>
+                <button data-filter="website" class="filter-btn">Website</button>
+                <button data-filter="ads" class="filter-btn">Quảng cáo</button>
+                <button data-filter="content" class="filter-btn">Content</button>
+                <button data-filter="branding" class="filter-btn">Branding</button>
+            </div>
+
+            <div class="portfolio-grid">
+                <div class="portfolio-card reveal" data-category="website">
+                    <div class="portfolio-img" style="background: url('assets/images/truonghoc247.png') center/cover;"></div>
+                    <div class="portfolio-overlay">
+                        <div class="portfolio-info">
+                            <h4 class="portfolio-title">Trường Học 247 - Quản Lý Giáo Dục</h4>
+                            <span class="portfolio-category">Website</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-card reveal" data-category="branding">
+                    <div class="portfolio-img" style="background: url('assets/images/vela_branding.png') center/cover;"></div>
+                    <div class="portfolio-overlay">
+                        <div class="portfolio-info">
+                            <h4 class="portfolio-title">VELA - Nhận Diện Nến Thơm</h4>
+                            <span class="portfolio-category">Branding</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-card reveal" data-category="content">
+                    <div class="portfolio-img" style="background: url('assets/images/ai_content_automation.png') center/cover;"></div>
+                    <div class="portfolio-overlay">
+                        <div class="portfolio-info">
+                            <h4 class="portfolio-title">Content Automation Bằng AI</h4>
+                            <span class="portfolio-category">Content</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-card reveal" data-category="ads">
+                    <div class="portfolio-img" style="background: url('assets/images/fb_ads_data.png') center/cover;"></div>
+                    <div class="portfolio-overlay">
+                        <div class="portfolio-info">
+                            <h4 class="portfolio-title">Facebook Ads Tối Ưu Data</h4>
+                            <span class="portfolio-category">Quảng cáo</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-card reveal" data-category="website">
+                    <div class="portfolio-img" style="background: url('assets/images/truonghoc247.png') center/cover;"></div>
+                    <div class="portfolio-overlay">
+                        <div class="portfolio-info">
+                            <h4 class="portfolio-title">Landing Page Chuyển Đổi Cao</h4>
+                            <span class="portfolio-category">Website</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-card reveal" data-category="branding">
+                    <div class="portfolio-img" style="background: url('assets/images/ai_content_automation.png') center/cover;"></div>
+                    <div class="portfolio-overlay">
+                        <div class="portfolio-info">
+                            <h4 class="portfolio-title">Chatbot AI & CSKH Tự Động 24/7</h4>
+                            <span class="portfolio-category">Automation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portfolio Modal -->
+        <div class="portfolio-modal" id="portfolioModal">
+            <div class="modal-content">
+                <button class="modal-close">&times;</button>
+                <div class="modal-body">
+                    <div class="modal-img"></div>
+                    <div class="modal-info">
+                        <h3 class="modal-title"></h3>
+                        <p class="modal-desc"></p>
+                        <div class="modal-metrics">
+                            <div class="metric-item">
+                                <span class="metric-value"></span>
+                                <span class="metric-label"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        <div class="footer-content">
+            <p class="footer-text">© 2026 Hoàng Thế Long. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="index.html">Trang chủ</a> |
+                <a href="services.html">Dịch vụ</a> |
+                <a href="portfolio.html">Dự án</a> |
+                <a href="blog.html">Blog</a> |
+                <a href="contact.html">Liên hệ</a>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://zalo.me/0358500914" target="_blank" rel="noopener" class="zalo-float" aria-label="Chat Zalo ngay">
+        <i class="fa-solid fa-comment-dots"></i>
+        <span>Chat Zalo</span>
+    </a>
+    <button class="back-to-top" aria-label="Back to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+</body>
+</html>
