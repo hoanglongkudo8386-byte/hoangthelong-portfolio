@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+﻿document.addEventListener('DOMContentLoaded', () => {
     // 1. Sticky Navbar
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
@@ -142,40 +142,37 @@ document.addEventListener('DOMContentLoaded', () => {
     // 7. Contact form enhancement with FormSubmit
     const contactForm = document.querySelector('.contact-form');
     if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btnSubmit = contactForm.querySelector('.btn-submit');
             
-            // Lấy dữ liệu form gửi vào CSDL Backend
+            // Lấy dữ liệu form gửi vào CSDL Backend Supabase
             const name = document.getElementById('name')?.value || '';
             const email = document.getElementById('email')?.value || '';
             const subject = document.getElementById('subject')?.value || '';
             const message = document.getElementById('message')?.value || '';
-
-            if (window.HTLDatabase) {
-                window.HTLDatabase.saveContact({ name, email, subject, message });
-            }
 
             if (btnSubmit) {
                 const originalText = btnSubmit.innerHTML;
                 btnSubmit.innerHTML = 'Đang gửi... <i class="fa-solid fa-spinner fa-spin"></i>';
                 btnSubmit.disabled = true;
                 
+                if (window.HTLDatabase) {
+                    await window.HTLDatabase.saveContact({ name, email, subject, message });
+                }
+
+                // Gửi form cho FormSubmit fallback (nếu vẫn dùng song song)
                 const formData = new FormData(contactForm);
-                
                 fetch(contactForm.action, {
                     method: 'POST',
                     body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                    headers: { 'Accept': 'application/json' }
                 })
-                .then(response => {
+                .then(() => {
                     btnSubmit.innerHTML = 'Đã gửi thành công! <i class="fa-solid fa-check"></i>';
                     contactForm.reset();
                 })
                 .catch(() => {
-                    // Ngay cả khi offline hoặc FormSubmit lỗi, dữ liệu vẫn được lưu an toàn trong CSDL Admin
                     btnSubmit.innerHTML = 'Đã gửi thành công! <i class="fa-solid fa-check"></i>';
                     contactForm.reset();
                 })
@@ -189,15 +186,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 8. Dynamic Render Blog & Portfolio từ Backend / AI Database
-    function renderDynamicBlogs() {
+    // 8. Dynamic Render Blog & Portfolio từ Backend Supabase
+    async function renderDynamicBlogs() {
         const blogGrid = document.querySelector('.blog-grid');
         if (!blogGrid || !window.HTLDatabase) return;
 
-        const blogs = window.HTLDatabase.getBlogs().filter(b => b.status === 'published');
-        if (blogs.length > 0) {
-            blogGrid.innerHTML = blogs.map(b => `
-                <a href="${b.slug ? 'blog/' + b.slug + '.html' : '#'}" class="blog-card reveal active">
+        const blogs = await window.HTLDatabase.getBlogs();
+        const publishedBlogs = blogs.filter(b => b.status === 'published');
+        if (publishedBlogs.length > 0) {
+            blogGrid.innerHTML = publishedBlogs.map(b => `
+                <a href="blog-detail.html?slug=${b.slug}" class="blog-card reveal active">
                     <div class="blog-img" style="background: url('${b.image_url}') center/cover;"></div>
                     <div class="blog-content">
                         <span class="blog-category">${escapeHtml(b.category)}</span>
@@ -212,11 +210,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function renderDynamicProjects() {
+    async function renderDynamicProjects() {
         const portfolioGrid = document.querySelector('.portfolio-grid');
         if (!portfolioGrid || !window.HTLDatabase) return;
 
-        const projects = window.HTLDatabase.getProjects();
+        const projects = await window.HTLDatabase.getProjects();
         if (projects.length > 0) {
             portfolioGrid.innerHTML = projects.map(p => `
                 <div class="portfolio-card reveal active" data-category="${p.category || 'website'}">
@@ -241,3 +239,5 @@ document.addEventListener('DOMContentLoaded', () => {
     renderDynamicBlogs();
     renderDynamicProjects();
 });
+
+
