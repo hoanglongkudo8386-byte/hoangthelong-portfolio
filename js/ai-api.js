@@ -13,18 +13,18 @@ class HTLAIEngine {
      * @param {Object} blogPayload 
      * { title, category, excerpt, content, cover_image, author }
      */
-    publishBlog(blogPayload) {
+    async publishBlog(blogPayload) {
         if (!blogPayload || !blogPayload.title || !blogPayload.content) {
             console.error('[AI Engine Error]: Vui lòng cung cấp tiêu đề và nội dung bài viết.');
             return { success: false, message: 'Thiếu thông tin tiêu đề hoặc nội dung.' };
         }
 
-        const newBlog = window.HTLDatabase.saveBlog({
+        const newBlog = await window.HTLDatabase.saveBlog({
             title: blogPayload.title,
             category: blogPayload.category || 'AI & Automation',
             excerpt: blogPayload.excerpt || (blogPayload.content.replace(/<[^>]*>?/gm, '').substring(0, 140) + '...'),
             content: blogPayload.content,
-            image_url: blogPayload.cover_image || 'https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=800&q=80',
+            image_url: blogPayload.cover_image || 'https://images.unsplash.com/photo-1677442136019-21780efad99a',
             status: 'published', // Xuất bản ngay tức thì
             published_at: new Date().toISOString().split('T')[0],
             views: Math.floor(Math.random() * 50) + 10
@@ -43,17 +43,17 @@ class HTLAIEngine {
      * @param {Object} projectPayload 
      * { title, category, description, image_url, metric_value, metric_label }
      */
-    publishProject(projectPayload) {
+    async publishProject(projectPayload) {
         if (!projectPayload || !projectPayload.title) {
             return { success: false, message: 'Thiếu tên dự án.' };
         }
 
-        const newProject = window.HTLDatabase.saveProject({
+        const newProject = await window.HTLDatabase.saveProject({
             title: projectPayload.title,
             category: projectPayload.category || 'website',
             category_name: projectPayload.category_name || 'Website',
             description: projectPayload.description || '',
-            image_url: projectPayload.image_url || 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80',
+            image_url: projectPayload.image_url || 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8',
             metric_value: projectPayload.metric_value || '+100%',
             metric_label: projectPayload.metric_label || 'Tăng trưởng'
         });
@@ -69,10 +69,10 @@ class HTLAIEngine {
     /**
      * Lấy báo cáo thống kê nhanh cho AI Agent
      */
-    getDashboardStats() {
-        const contacts = window.HTLDatabase.getContacts();
-        const blogs = window.HTLDatabase.getBlogs();
-        const projects = window.HTLDatabase.getProjects();
+    async getDashboardStats() {
+        const contacts = await window.HTLDatabase.getContacts();
+        const blogs = await window.HTLDatabase.getBlogs();
+        const projects = await window.HTLDatabase.getProjects();
 
         return {
             total_leads: contacts.length,

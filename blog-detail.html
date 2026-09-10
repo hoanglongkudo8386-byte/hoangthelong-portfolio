@@ -1,0 +1,202 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đang tải bài viết...</title>
+    <meta name="description" content="Đang tải nội dung bài viết...">
+    
+    <!-- Open Graph for Facebook/Zalo -->
+    <meta property="og:title" content="Đang tải bài viết...">
+    <meta property="og:description" content="Đang tải nội dung bài viết...">
+    <meta property="og:image" content="">
+    <meta property="og:type" content="article">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Quill Snow Theme for reading -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <script src="js/supabase-config.js"></script>
+    <script src="js/ai-api.js"></script>
+
+    <style>
+        .blog-detail-container {
+            max-width: 800px;
+            margin: 120px auto 60px;
+            padding: 0 20px;
+        }
+        .blog-detail-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .blog-detail-category {
+            display: inline-block;
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--accent-blue);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .blog-detail-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            line-height: 1.3;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+        .blog-detail-meta {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .blog-detail-cover {
+            width: 100%;
+            height: 400px;
+            border-radius: 20px;
+            object-fit: cover;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .blog-detail-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+        
+        /* Quill Content Overrides for Reading */
+        .ql-editor { padding: 0; font-family: 'Inter', sans-serif; font-size: 1.1rem; line-height: 1.8; color: var(--text-secondary); }
+        .ql-editor h2, .ql-editor h3 { color: var(--text-light); margin-top: 2em; margin-bottom: 1em; font-family: 'Space Grotesk', sans-serif; }
+        .ql-editor p { margin-bottom: 1.5em; }
+        .ql-editor img { max-width: 100%; border-radius: 12px; margin: 20px 0; }
+        
+        #loading-state, #error-state {
+            text-align: center; padding: 100px 20px; color: var(--text-muted);
+        }
+        #error-state { display: none; }
+        #blog-content-area { display: none; }
+    </style>
+</head>
+<body class="dark-mode">
+
+    <!-- NAVBAR -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="gradient-text">HTL.</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Trang chủ</a>
+                <a href="about.html">Về tôi</a>
+                <a href="blog.html" class="active">Blog</a>
+                <a href="contact.html" class="btn btn-outline">Liên hệ</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="blog-detail-container">
+        <!-- Loading State -->
+        <div id="loading-state">
+            <i class="fa-solid fa-spinner fa-spin fa-3x" style="color: var(--accent-blue); margin-bottom: 20px;"></i>
+            <h2>Đang tải bài viết...</h2>
+        </div>
+
+        <!-- Error State -->
+        <div id="error-state">
+            <i class="fa-solid fa-triangle-exclamation fa-3x" style="color: var(--accent-purple); margin-bottom: 20px;"></i>
+            <h2>Không tìm thấy bài viết!</h2>
+            <p>Bài viết này có thể đã bị xóa hoặc đường dẫn không chính xác.</p>
+            <a href="blog.html" class="btn btn-primary" style="margin-top: 20px;">Quay lại Blog</a>
+        </div>
+
+        <!-- Article Content -->
+        <article id="blog-content-area">
+            <header class="blog-detail-header">
+                <div class="blog-detail-category" id="renderCategory">Category</div>
+                <h1 class="blog-detail-title" id="renderTitle">Title</h1>
+                <div class="blog-detail-meta">
+                    <span><i class="fa-regular fa-calendar"></i> <span id="renderDate">Date</span></span>
+                    <span><i class="fa-solid fa-eye"></i> <span id="renderViews">0</span> lượt xem</span>
+                </div>
+            </header>
+
+            <img src="" alt="Cover Image" class="blog-detail-cover" id="renderCover">
+
+            <!-- Dng ql-editor d? class nh?n style c?a Quill -->
+            <div class="blog-detail-content ql-snow">
+                <div class="ql-editor" id="renderContent">
+                    <!-- HTML Content -->
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Hoàng Thế Long. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- BLOG RENDER LOGIC -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+
+            if (!slug) {
+                document.getElementById('loading-state').style.display = 'none';
+                document.getElementById('error-state').style.display = 'block';
+                return;
+            }
+
+            // Fetch from Supabase
+            const blogData = await window.HTLDatabase.getBlogBySlug(slug);
+
+            if (!blogData) {
+                document.getElementById('loading-state').style.display = 'none';
+                document.getElementById('error-state').style.display = 'block';
+                return;
+            }
+
+            // Inject SEO Metadata dynamically
+            document.title = (blogData.meta_title || blogData.title) + " - Hoàng Thế Long";
+            
+            const metaDesc = blogData.meta_description || blogData.excerpt || "";
+            document.querySelector('meta[name="description"]').setAttribute("content", metaDesc);
+            document.querySelector('meta[property="og:title"]').setAttribute("content", blogData.meta_title || blogData.title);
+            document.querySelector('meta[property="og:description"]').setAttribute("content", metaDesc);
+            document.querySelector('meta[property="og:image"]').setAttribute("content", blogData.image_url);
+
+            // Render Content
+            document.getElementById('renderCategory').textContent = blogData.category;
+            document.getElementById('renderTitle').textContent = blogData.title;
+            document.getElementById('renderDate').textContent = blogData.published_at;
+            document.getElementById('renderViews').textContent = blogData.views || 1;
+            document.getElementById('renderCover').src = blogData.image_url;
+            
+            // Render HTML directly into ql-editor
+            document.getElementById('renderContent').innerHTML = blogData.content;
+
+            // Show Content
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('blog-content-area').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
+

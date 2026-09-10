@@ -1,0 +1,379 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Quản Trị - Hoàng Thế Long Admin</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Admin CSS -->
+    <link rel="stylesheet" href="css/admin.css">
+
+    <!-- CSDL & AI Engine SDK -->
+    <script src="js/supabase-config.js?v=1788932861"></script>
+    <script src="js/ai-api.js?v=1788932861"></script>
+    <!-- Quill Rich Text Editor -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+</head>
+<body class="admin-body">
+
+    <!-- 1. MAN HINH DANG NHAP -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <div class="login-logo">HTL ADMIN</div>
+            <p class="login-title">Hệ Thống Quản Trị & AI Engine</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="adminEmail">Email quản trị</label>
+                    <input type="email" id="adminEmail" class="admin-input" placeholder="admin@hoangthelong.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="adminPassword">Mật khẩu</label>
+                    <input type="password" id="adminPassword" class="admin-input" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-admin btn-admin-primary" style="width: 100%;">
+                    Đăng Nhập Quản Trị <i class="fa-solid fa-right-to-bracket"></i>
+                </button>
+                <div id="loginError" style="color: var(--danger); font-size: 0.85rem; margin-top: 10px; display: none;">Sai email hoặc mật khẩu!</div>
+                <div class="form-group" style="text-align: center; margin: 15px 0;">
+                    <span style="color: var(--text-secondary); font-size: 0.85rem;">HOẶC</span>
+                </div>
+                <button type="button" id="btnGoogleLogin" class="btn-admin" style="width: 100%; background: white; color: #333; border: 1px solid #ddd; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" width="18"> Đăng nhập bằng Google (OAuth)
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- 2. SIDEBAR THONG TIN -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-robot" style="color: var(--accent-blue);"></i>
+            <span>HTL DASHBOARD</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="menu-item active" data-tab="dashboard">
+                <a href="#dashboard"><i class="fa-solid fa-chart-pie"></i> <span>Tổng quan</span></a>
+            </li>
+            <li class="menu-item" data-tab="leads">
+                <a href="#leads"><i class="fa-solid fa-users"></i> <span>Lead Khách hàng</span></a>
+            </li>
+            <li class="menu-item" data-tab="blogs">
+                <a href="#blogs"><i class="fa-solid fa-newspaper"></i> <span>Bài viết Blog</span></a>
+            </li>
+            <li class="menu-item" data-tab="portfolio">
+                <a href="#portfolio"><i class="fa-solid fa-briefcase"></i> <span>Dự án Portfolio</span></a>
+            </li>
+            <li class="menu-item" data-tab="ai-engine">
+                <a href="#ai-engine"><i class="fa-solid fa-wand-magic-sparkles"></i> <span>AI Content Engine</span></a>
+            </li>
+        </ul>
+        
+        <div class="sidebar-footer">
+            <button id="btnLogout" class="btn-admin btn-admin-danger" style="width: 100%; font-size: 0.85rem; margin-bottom: 10px; justify-content: center;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất
+            </button>
+            <a href="index.html" class="btn-admin btn-admin-primary" style="width: 100%; font-size: 0.85rem; justify-content: center;" target="_blank">
+                <i class="fa-solid fa-globe"></i> Xem Trang Web
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- 3. NOI DUNG CHINH -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <div>
+                <h1 class="page-title" id="pageTitle">Tổng Quan Hệ Thống</h1>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.2rem;">Quản lý dữ liệu & Tự động hóa nội dung bằng AI</p>
+            </div>
+            <div class="user-badge">
+                
+                <div>
+                    <div style="font-size: 0.85rem; font-weight: 600;" class="user-name">Hoàng Thế Long</div>
+                    <div style="font-size: 0.75rem; color: var(--accent-green);">● AI Publisher Active</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- TAB 1: DASHBOARD TONG QUAN -->
+        <section class="tab-content active" id="tab-dashboard">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue"><i class="fa-solid fa-envelope-open-text"></i></div>
+                    <div class="stat-info">
+                        <h3>Tổng Lead Nhận Được</h3>
+                        <div class="stat-value" id="statTotalLeads">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple"><i class="fa-solid fa-bell"></i></div>
+                    <div class="stat-info">
+                        <h3>Lead Mới Cần Xử Lý</h3>
+                        <div class="stat-value" id="statNewLeads">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fa-solid fa-file-pen"></i></div>
+                    <div class="stat-info">
+                        <h3>Bài Viết Blog Published</h3>
+                        <div class="stat-value" id="statTotalBlogs">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon amber"><i class="fa-solid fa-diagram-project"></i></div>
+                    <div class="stat-info">
+                        <h3>Dự Án Nổi Bật</h3>
+                        <div class="stat-value" id="statTotalProjects">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI QUICK PUBLISH BOX -->
+            <div class="ai-box">
+                <div class="ai-box-header">
+                    <i class="fa-solid fa-bolt"></i> AI Quick Publish (Đăng Bài Ngay Tức Thì)
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                    Bấm nút bên dưới để thử nghiệm AI Agent tự động sáng tạo & ĐĂNG NGAY 1 bài viết chuẩn SEO lên website trong 1 giây!
+                </p>
+                <button class="btn-admin btn-admin-primary" id="btnQuickAIPublish" style="width: auto;">
+                    <i class="fa-solid fa-robot"></i> Tạo & Đăng Bài SEO Ngay Bằng AI
+                </button>
+            </div>
+
+            <!-- RECENT LEADS PREVIEW TABLE -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Khách Hàng Liên Hệ Mới Nhất</h2>
+                    <button class="btn-admin btn-admin-success" onclick="HTLDatabase.exportContactsCSV()">
+                        <i class="fa-solid fa-file-excel"></i> Xuất File CSV / Excel
+                    </button>
+                </div>
+                <div class="table-responsive"><table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Họ và tên</th>
+                            <th>Email</th>
+                            <th>Chủ đề</th>
+                            <th>Trạng thái</th>
+                            <th>Thời gian</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentLeadsTable">
+                        <!-- Render via JS -->
+                    </tbody>
+                </table></div>
+            </div>
+        </section>
+
+        <!-- TAB 2: LEADS KHÁCH HÀNG -->
+        <section class="tab-content" id="tab-leads">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Danh Sách Lead Khách Hàng</h2>
+                    <button class="btn-admin btn-admin-success" onclick="HTLDatabase.exportContactsCSV()">
+                        <i class="fa-solid fa-download"></i> Tải File Excel
+                    </button>
+                </div>
+                <div class="table-responsive"><table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Họ và tên</th>
+                            <th>Email</th>
+                            <th>Chủ đề</th>
+                            <th>Nội dung</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fullLeadsTable">
+                        <!-- Render via JS -->
+                    </tbody>
+                </table></div>
+            </div>
+        </section>
+
+        <!-- TAB 3: BLOGS -->
+        <section class="tab-content" id="tab-blogs">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Soạn Thảo & Đăng Bài Blog Mới</h2>
+                </div>
+                <form id="createBlogForm">
+                    <div class="form-group">
+                        <label class="form-label">Tiêu đề bài viết</label>
+                        <input type="text" id="blogTitle" class="admin-input" placeholder="Ví dụ: Bí Quyết Tăng X3 Doanh Số Với AI Ads 2026" required>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Danh mục</label>
+                            <input type="text" id="blogCategory" class="admin-input" placeholder="Ví dụ: AI Content, Facebook Ads..." required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">URL Ảnh Bìa (Unsplash / Canva)</label>
+                            <input type="url" id="blogImage" class="admin-input" placeholder="https://images.unsplash.com/...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nội dung chi tiết (Hỗ trợ HTML / Text)</label>
+                        <div id="blogEditor" style="height: 300px; background: #fff; color: #000; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;"></div>
+                    </div>
+                    
+<div class="card-header" style="margin-top: 1.5rem;"><h3 class="card-title" style="font-size: 1rem;"><i class="fa-solid fa-magnifying-glass"></i> Tối ưu SEO</h3></div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;"><div class="form-group"><label class="form-label">URL thân thiện (Slug)</label><input type="text" id="blogSlug" class="admin-input" placeholder="tu-dong-tao-tu-tieu-de"></div><div class="form-group"><label class="form-label">Tiêu đề SEO (Meta Title)</label><input type="text" id="blogMetaTitle" class="admin-input" placeholder="Tối đa 60 ký tự"></div></div><div class="form-group"><label class="form-label">Mô tả SEO (Meta Description)</label><textarea id="blogMetaDesc" class="admin-textarea" rows="2" placeholder="Tối đa 150 ký tự..."></textarea></div>
+
+<div class="card-header" style="margin-top: 1.5rem;"><h3 class="card-title" style="font-size: 1rem;"><i class="fa-solid fa-magnifying-glass"></i> Tối ưu SEO</h3></div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;"><div class="form-group"><label class="form-label">URL thân thiện (Slug)</label><input type="text" id="projSlug" class="admin-input" placeholder="tu-dong-tao-tu-tieu-de"></div><div class="form-group"><label class="form-label">Tiêu đề SEO (Meta Title)</label><input type="text" id="projMetaTitle" class="admin-input" placeholder="Tối đa 60 ký tự"></div></div><div class="form-group"><label class="form-label">Mô tả SEO (Meta Description)</label><textarea id="projMetaDesc" class="admin-textarea" rows="2" placeholder="Tối đa 150 ký tự..."></textarea></div>
+<button type="submit" class="btn-admin btn-admin-primary" style="width: auto;">
+                        <i class="fa-solid fa-paper-plane"></i> Đăng Bài Ngay Tức Thì
+                    </button>
+                </form>
+            </div>
+
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Danh Sách Bài Viết Đã Đăng</h2>
+                </div>
+                <div class="table-responsive"><table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Tiêu đề</th>
+                            <th>Danh mục</th>
+                            <th>Ngày đăng</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="blogsTable">
+                        <!-- Render via JS -->
+                    </tbody>
+                </table></div>
+            </div>
+        </section>
+
+        <!-- TAB 4: PORTFOLIO -->
+        <section class="tab-content" id="tab-portfolio">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Thêm Dự Án Portfolio Mới</h2>
+                </div>
+                <form id="createProjectForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Tên dự án</label>
+                            <input type="text" id="projTitle" class="admin-input" placeholder="Ví dụ: Landing Page Đào Tạo AI" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phân loại</label>
+                            <select id="projCategory" class="admin-select">
+                                <option value="website">Website / Landing Page</option>
+                                <option value="ads">Quảng cáo Ads</option>
+                                <option value="content">Content Marketing</option>
+                                <option value="branding">Branding & Nhận Diện</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Số liệu chỉ số (Metric Value)</label>
+                            <input type="text" id="projMetricValue" class="admin-input" placeholder="Ví dụ: +300%, 5.000 Lead, -40% CPA" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tên chỉ số (Metric Label)</label>
+                            <input type="text" id="projMetricLabel" class="admin-input" placeholder="Ví dụ: Tăng trưởng traffic" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">URL Hình ảnh dự án</label>
+                        <input type="url" id="projImage" class="admin-input" placeholder="https://images.unsplash.com/..." required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mô tả dự án</label>
+                        <textarea id="projDesc" class="admin-textarea" rows="3" placeholder="Mô tả kết quả công việc..."></textarea>
+                    </div>
+                    
+<div class="card-header" style="margin-top: 1.5rem;"><h3 class="card-title" style="font-size: 1rem;"><i class="fa-solid fa-magnifying-glass"></i> Tối ưu SEO</h3></div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;"><div class="form-group"><label class="form-label">URL thân thiện (Slug)</label><input type="text" id="projSlug" class="admin-input" placeholder="tu-dong-tao-tu-tieu-de"></div><div class="form-group"><label class="form-label">Tiêu đề SEO (Meta Title)</label><input type="text" id="projMetaTitle" class="admin-input" placeholder="Tối đa 60 ký tự"></div></div><div class="form-group"><label class="form-label">Mô tả SEO (Meta Description)</label><textarea id="projMetaDesc" class="admin-textarea" rows="2" placeholder="Tối đa 150 ký tự..."></textarea></div>
+<button type="submit" class="btn-admin btn-admin-primary" style="width: auto;">
+                        <i class="fa-solid fa-plus"></i> Đăng Dự Án Mới
+                    </button>
+                </form>
+            </div>
+
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Danh Sách Dự Án Đã Đăng</h2>
+                </div>
+                <div class="table-responsive"><table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Tên dự án</th>
+                            <th>Loại</th>
+                            <th>Chỉ số đạt được</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectsTable">
+                        <!-- Render via JS -->
+                    </tbody>
+                </table></div>
+            </div>
+        </section>
+
+        <!-- TAB 5: AI ENGINE PLAYGROUND -->
+        <section class="tab-content" id="tab-ai-engine">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fa-solid fa-code" style="color: var(--accent-purple);"></i> Hướng Dẫn Gọi API Cho AI Agent (Antigravity & Claude)</h2>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.6;">
+                    Hệ thống cung cấp SDK Javascript <code>HTLAIEngine</code> đã được tích hợp trực tiếp trên toàn bộ website. Bạn hoặc bất kỳ AI Agent nào có thể xuất bản bài viết bằng cách gọi đoạn code đơn giản sau trong Console hoặc qua Script:
+                </p>
+
+                <div style="background: #0d1117; padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-color); font-family: monospace; color: #a5d6ff; margin-bottom: 1.5rem; overflow-x: auto;">
+// Cách gọi đăng bài tự động ĐĂNG NGAY tức thì:<br>
+HTLAIEngine.publishBlog({<br>
+&nbsp;&nbsp;title: "Chiến thuật Automation Marketing đỉnh cao 2026",<br>
+&nbsp;&nbsp;category: "Automation",<br>
+&nbsp;&nbsp;content: "&lt;p&gt;Nội dung bài viết chi tiết...&lt;/p&gt;",<br>
+&nbsp;&nbsp;cover_image: "https://images.unsplash.com/photo-1677442136019-21780efad99a"<br>
+});
+                </div>
+
+                <div class="ai-box">
+                    <div class="ai-box-header">Thử Nghiệm Trực Tiếp AI API Publisher</div>
+                    <form id="aiApiTestForm">
+                        <div class="form-group">
+                            <label class="form-label">Nhập prompt cho AI tạo bài tức thì</label>
+                            <input type="text" id="aiTestPrompt" class="admin-input" value="Top 5 công cụ AI Marketer cần biết 2026" required>
+                        </div>
+                        <button type="submit" class="btn-admin btn-admin-primary" style="width: auto;">
+                            <i class="fa-solid fa-play"></i> Thực Chạy API Đăng Ngay
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Admin Logic JS -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script src="js/admin.js?v=1788934068"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+

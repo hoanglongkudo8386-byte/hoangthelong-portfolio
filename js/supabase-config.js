@@ -1,252 +1,278 @@
-/**
- * Hoàng Thế Long Website - Supabase & Data Abstraction Layer
- * Hỗ trợ kết nối CSDL Supabase & Tự động sao lưu LocalStorage nếu chưa điền API Key.
+﻿/**
+ * Hoàng Thế Long Website - Supabase REST API Data Abstraction Layer
+ * Đã kết nối với Database Supabase thực tế.
  */
 
 const SUPABASE_CONFIG = {
-    // Nhập thông tin Supabase của bạn tại đây (nếu có):
-    url: 'https://gvigrkrlymrllfatuinw.supabase.co', // Ví dụ: 'https://xyzcompany.supabase.co'
-    anonKey: 'sb_publishable_VY5--I1yacEERQKzaMALeg_mNuo31Cq', // Key public anon từ Supabase Dashboard
-    apiKey: 'HTL_SECRET_AI_KEY_2026' // Key xác thực riêng cho AI Engine
+    url: 'https://gvigrkrlymrllfatuinw.supabase.co',
+    anonKey: 'sb_publishable_VY5--I1yacEERQKzaMALeg_mNuo31Cq',
+    get headers() {
+        const token = localStorage.getItem('htl_access_token');
+        return {
+            'apikey': this.anonKey,
+            'Authorization': `Bearer ${this.anonKey}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+        };
+    }
 };
-
-// Dữ liệu mẫu ban đầu (Seed Data)
-const INITIAL_BLOGS = [
-    {
-        id: 'blog-1',
-        title: '3 Công Thức Viết Content "Thôi Miên" Khách Hàng',
-        slug: 'cong-thuc-viet-content',
-        category: 'Content',
-        excerpt: 'Đừng viết theo bản năng. Áp dụng ngay 3 công thức này (AIDA, PAS, BAB) để bài viết của bạn chạm đúng "chỗ ngứa"...',
-        content: `<h3>1. Công Thức AIDA (Attention - Interest - Desire - Action)</h3><p>AIDA là công thức kinh điển trong Marketing giúp dẫn dắt tâm lý khách hàng qua 4 tầng cảm xúc từ chú ý đến hành động mua hàng.</p><h3>2. Công Thức PAS (Problem - Agitate - Solve)</h3><p>Đánh trúng nỗi đau (Problem), xoáy sâu vào hậu quả (Agitate) và đưa ra giải pháp hoàn hảo (Solve).</p>`,
-        image_url: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80',
-        published_at: '2026-08-01',
-        status: 'published',
-        views: 342
-    },
-    {
-        id: 'blog-2',
-        title: '5 Mẹo Tối Ưu Facebook Ads Giảm 50% Chi Phí',
-        slug: 'facebook-ads-tips',
-        category: 'Facebook Ads',
-        excerpt: 'Những chiến thuật đã được kiểm chứng giúp bạn chạy quảng cáo Facebook hiệu quả hơn...',
-        content: `<p>Trong bối cảnh CPM tăng cao năm 2026, tối ưu hóa tệp đối tượng và ứng dụng AI targeting là chìa khóa để giảm CPA.</p>`,
-        image_url: 'https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?auto=format&fit=crop&w=800&q=80',
-        published_at: '2026-07-15',
-        status: 'published',
-        views: 520
-    },
-    {
-        id: 'blog-3',
-        title: 'AI Trong Marketing: Xu Hướng Không Thể Bỏ Qua 2026',
-        slug: 'ai-marketing',
-        category: 'AI',
-        excerpt: 'Khám phá cách AI đang thay đổi ngành marketing và cách bạn có thể tận dụng...',
-        content: `<p>Sử dụng AI Agent để tự động hóa quy trình sáng tạo content, chạy ads và phân tích dữ liệu khách hàng.</p>`,
-        image_url: 'https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=800&q=80',
-        published_at: '2026-07-01',
-        status: 'published',
-        views: 890
-    }
-];
-
-const INITIAL_PROJECTS = [
-    {
-        id: 'proj-1',
-        title: 'Trường Học 247 - Quản Lý Giáo Dục',
-        category: 'website',
-        category_name: 'Website',
-        image_url: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80',
-        description: 'Xây dựng giao diện web quản lý trung tâm đào tạo chuẩn UX/UI và tích hợp tự động thu thập Lead.',
-        metric_value: '+250%',
-        metric_label: 'Tỷ lệ chuyển đổi Lead'
-    },
-    {
-        id: 'proj-2',
-        title: 'VELA - Nhận Diện Nến Thơm',
-        category: 'branding',
-        category_name: 'Branding',
-        image_url: 'https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&w=800&q=80',
-        description: 'Bộ nhận diện thương hiệu cao cấp dành cho dòng sản phẩm nến thơm handmade.',
-        metric_value: '100%',
-        metric_label: 'Đồng bộ Brand Kit'
-    },
-    {
-        id: 'proj-3',
-        title: 'Content Automation Bằng AI',
-        category: 'content',
-        category_name: 'Content',
-        image_url: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80',
-        description: 'Thiết lập quy trình sản xuất 30+ bài viết chất lượng cao mỗi tuần nhờ AI Prompt Engineering.',
-        metric_value: '3x',
-        metric_label: 'Tốc độ sản xuất'
-    },
-    {
-        id: 'proj-4',
-        title: 'Facebook Ads Tối Ưu Data',
-        category: 'ads',
-        category_name: 'Quảng cáo',
-        image_url: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=800&q=80',
-        description: 'Chiến dịch Facebook Ads sử dụng A/B testing liên tục giúp tối ưu chi phí thu nạp khách hàng.',
-        metric_value: '-45%',
-        metric_label: 'Chi phí CPA'
-    }
-];
 
 class HTLDatabaseManager {
     constructor() {
-        this.initStorage();
+        console.log('✅ HTL Database Initialized (Supabase Connected)');
     }
 
-    initStorage() {
-        if (!localStorage.getItem('htl_contacts')) {
-            localStorage.setItem('htl_contacts', JSON.stringify([]));
-        }
-        if (!localStorage.getItem('htl_blogs')) {
-            localStorage.setItem('htl_blogs', JSON.stringify(INITIAL_BLOGS));
-        }
-        if (!localStorage.getItem('htl_projects')) {
-            localStorage.setItem('htl_projects', JSON.stringify(INITIAL_PROJECTS));
-        }
+    
+    // --- AUTHENTICATION ---
+    
+    loginWithGoogle() {
+        const redirectUrl = encodeURIComponent(window.location.origin + window.location.pathname);
+        window.location.href = "https://gvigrkrlymrllfatuinw.supabase.co/auth/v1/authorize?provider=google&redirect_to=" + redirectUrl;
     }
 
-    // --- LEADS / CONTACTS ---
-    getContacts() {
+    checkOAuthCallback() {
+        const hash = window.location.hash;
+        if (hash && hash.includes('access_token=')) {
+            const params = new URLSearchParams(hash.substring(1));
+            const accessToken = params.get('access_token');
+            if (accessToken) {
+                localStorage.setItem('htl_access_token', accessToken);
+                localStorage.setItem('htl_admin_email', 'Google_OAuth_User');
+                window.location.hash = ''; // Xóa hash đi cho gọn
+            }
+        }
+    }
+async login(email, password) {
         try {
-            return JSON.parse(localStorage.getItem('htl_contacts')) || [];
+            const res = await fetch("https://gvigrkrlymrllfatuinw.supabase.co/auth/v1/token?grant_type=password", {
+                method: 'POST',
+                headers: { 'apikey': SUPABASE_CONFIG.anonKey, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if (data.access_token) {
+                localStorage.setItem('htl_access_token', data.access_token); localStorage.setItem('htl_admin_email', email);
+                return { success: true };
+            }
+            return { success: false, message: data.error_description || 'Sai thông tin đăng nhập' };
         } catch (e) {
+            console.error('Lỗi đăng nhập:', e);
+            return { success: false, message: 'Lỗi máy chủ' };
+        }
+    }
+
+    logout() {
+        localStorage.removeItem('htl_access_token'); localStorage.removeItem('htl_admin_email');
+        window.location.reload();
+    }
+
+    isAuthenticated() {
+        return !!localStorage.getItem('htl_access_token');
+    }
+// --- LEADS / CONTACTS ---
+    async getContacts() {
+        try {
+            const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/contacts?select=*&order=created_at.desc`, { headers: SUPABASE_CONFIG.headers });
+            if (!res.ok) throw new Error('Network response was not ok');
+            return await res.json();
+        } catch (e) {
+            console.error('Lỗi lấy danh sách liên hệ:', e);
             return [];
         }
     }
 
-    saveContact(contactData) {
-        const contacts = this.getContacts();
-        const newContact = {
-            id: 'lead-' + Date.now(),
+    async saveContact(contactData) {
+        const payload = {
             name: contactData.name || 'Khách hàng',
             email: contactData.email || '',
             subject: contactData.subject || 'Đăng ký tư vấn',
             message: contactData.message || '',
-            status: 'new', // new | processing | completed
-            created_at: new Date().toISOString()
+            status: 'new'
         };
-        contacts.unshift(newContact);
-        localStorage.setItem('htl_contacts', JSON.stringify(contacts));
-        return newContact;
-    }
-
-    updateContactStatus(id, status) {
-        const contacts = this.getContacts();
-        const index = contacts.findIndex(c => c.id === id);
-        if (index !== -1) {
-            contacts[index].status = status;
-            localStorage.setItem('htl_contacts', JSON.stringify(contacts));
-            return contacts[index];
+        try {
+            const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/contacts`, {
+                method: 'POST',
+                headers: SUPABASE_CONFIG.headers,
+                body: JSON.stringify(payload)
+            });
+            return await res.json();
+        } catch (e) {
+            console.error('Lỗi lưu liên hệ:', e);
+            return null;
         }
-        return null;
     }
 
-    deleteContact(id) {
-        let contacts = this.getContacts();
-        contacts = contacts.filter(c => c.id !== id);
-        localStorage.setItem('htl_contacts', JSON.stringify(contacts));
+    async updateContactStatus(id, status) {
+        try {
+            const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/contacts?id=eq.${id}`, {
+                method: 'PATCH',
+                headers: SUPABASE_CONFIG.headers,
+                body: JSON.stringify({ status })
+            });
+            return await res.json();
+        } catch (e) {
+            console.error('Lỗi cập nhật trạng thái:', e);
+            return null;
+        }
+    }
+
+    async deleteContact(id) {
+        try {
+            await fetch(`${SUPABASE_CONFIG.url}/rest/v1/contacts?id=eq.${id}`, {
+                method: 'DELETE',
+                headers: SUPABASE_CONFIG.headers
+            });
+        } catch (e) {
+            console.error('Lỗi xóa liên hệ:', e);
+        }
     }
 
     // --- BLOGS ---
-    getBlogs() {
+    async getBlogBySlug(slug) {
         try {
-            return JSON.parse(localStorage.getItem('htl_blogs')) || [];
+            const res = await fetch("https://gvigrkrlymrllfatuinw.supabase.co/rest/v1/blogs?slug=eq." + slug + "&select=*&limit=1", { headers: SUPABASE_CONFIG.headers });
+            const data = await res.json();
+            return data.length > 0 ? data[0] : null;
+        } catch (e) { console.error('Lỗi lấy bài viết:', e); return null; }
+    }
+
+    async getBlogs() {
+        try {
+            const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/blogs?select=*&order=created_at.desc`, { headers: SUPABASE_CONFIG.headers });
+            return await res.json();
         } catch (e) {
-            return INITIAL_BLOGS;
+            console.error('Lỗi lấy bài viết:', e);
+            return [];
         }
     }
 
-    saveBlog(blogData) {
-        const blogs = this.getBlogs();
+    async saveBlog(blogData) {
         const slug = blogData.slug || this.slugify(blogData.title || 'bai-viet-moi');
-        
-        const existingIndex = blogs.findIndex(b => b.id === blogData.id || b.slug === slug);
-        const newBlog = {
-            id: blogData.id || 'blog-' + Date.now(),
+        const payload = {
             title: blogData.title,
             slug: slug,
             category: blogData.category || 'AI & Marketing',
-            excerpt: blogData.excerpt || (blogData.content ? blogData.content.replace(/<[^>]*>?/gm, '').substring(0, 120) + '...' : 'Bài viết mới...'),
+            excerpt: blogData.excerpt || (blogData.content ? blogData.content.replace(/<[^>]*>?/gm, '').substring(0, 120) + '...' : ''),
             content: blogData.content || '',
-            image_url: blogData.image_url || 'https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=800&q=80',
+            image_url: blogData.image_url || 'https://images.unsplash.com/photo-1677442136019-21780efad99a',
             published_at: blogData.published_at || new Date().toISOString().split('T')[0],
-            status: blogData.status || 'published', // Đăng ngay theo chế độ người dùng duyệt
+            status: blogData.status || 'published',
+            meta_title: blogData.meta_title || '',
+            meta_description: blogData.meta_description || '',
             views: blogData.views || 1
         };
 
-        if (existingIndex !== -1) {
-            blogs[existingIndex] = { ...blogs[existingIndex], ...newBlog };
-        } else {
-            blogs.unshift(newBlog);
+        try {
+            const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/blogs`, {
+                method: 'POST',
+                headers: SUPABASE_CONFIG.headers,
+                body: JSON.stringify(payload)
+            });
+            return await res.json();
+        } catch (e) {
+            console.error('Lỗi lưu bài viết:', e);
+            return null;
         }
-
-        localStorage.setItem('htl_blogs', JSON.stringify(blogs));
-        return newBlog;
     }
 
-    deleteBlog(id) {
-        let blogs = this.getBlogs();
-        blogs = blogs.filter(b => b.id !== id);
-        localStorage.setItem('htl_blogs', JSON.stringify(blogs));
+    async deleteBlog(id) {
+        try {
+            await fetch(`${SUPABASE_CONFIG.url}/rest/v1/blogs?id=eq.${id}`, {
+                method: 'DELETE',
+                headers: SUPABASE_CONFIG.headers
+            });
+        } catch (e) {
+            console.error('Lỗi xóa bài viết:', e);
+        }
     }
 
     // --- PORTFOLIO PROJECTS ---
-    getProjects() {
+    async getProjects() {
         try {
-            return JSON.parse(localStorage.getItem('htl_projects')) || [];
+            const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/projects?select=*&order=created_at.desc`, { headers: SUPABASE_CONFIG.headers });
+            return await res.json();
         } catch (e) {
-            return INITIAL_PROJECTS;
+            console.error('Lỗi lấy dự án:', e);
+            return [];
         }
     }
 
-    saveProject(projectData) {
-        const projects = this.getProjects();
-        const newProject = {
-            id: projectData.id || 'proj-' + Date.now(),
+    async saveProject(projectData) {
+        const payload = {
             title: projectData.title,
             category: projectData.category || 'website',
-            category_name: projectData.category_name || (projectData.category ? projectData.category.toUpperCase() : 'General'),
-            image_url: projectData.image_url || 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80',
+            category_name: projectData.category_name || 'Website',
+            image_url: projectData.image_url || 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8',
             description: projectData.description || '',
             metric_value: projectData.metric_value || '+100%',
-            metric_label: projectData.metric_label || 'Hiệu quả đạt được',
-            created_at: new Date().toISOString()
+            metric_label: projectData.metric_label || 'Tăng trưởng',
+            slug: projectData.slug || this.slugify(projectData.title || 'du-an-moi'),
+            meta_title: projectData.meta_title || '',
+            meta_description: projectData.meta_description || ''
         };
 
-        projects.unshift(newProject);
-        localStorage.setItem('htl_projects', JSON.stringify(projects));
-        return newProject;
+        try {
+            const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/projects`, {
+                method: 'POST',
+                headers: SUPABASE_CONFIG.headers,
+                body: JSON.stringify(payload)
+            });
+            return await res.json();
+        } catch (e) {
+            console.error('Lỗi lưu dự án:', e);
+            return null;
+        }
     }
 
-    deleteProject(id) {
-        let projects = this.getProjects();
-        projects = projects.filter(p => p.id !== id);
-        localStorage.setItem('htl_projects', JSON.stringify(projects));
+    async deleteProject(id) {
+        try {
+            await fetch(`${SUPABASE_CONFIG.url}/rest/v1/projects?id=eq.${id}`, {
+                method: 'DELETE',
+                headers: SUPABASE_CONFIG.headers
+            });
+        } catch (e) {
+            console.error('Lỗi xóa dự án:', e);
+        }
     }
 
-    // --- HELPER UTILS ---
+    
+    // --- TEAM MEMBERS ---
+    async getTeamMembers() {
+        try {
+            const res = await fetch("https://gvigrkrlymrllfatuinw.supabase.co/rest/v1/team_members?select=*&order=created_at.desc", { headers: this.headers });
+            if(!res.ok) return [];
+            return await res.json();
+        } catch(e) { return []; }
+    }
+
+    // --- AUDIT LOGS ---
+    async getAuditLogs() {
+        try {
+            const res = await fetch("https://gvigrkrlymrllfatuinw.supabase.co/rest/v1/audit_logs?select=*&order=created_at.desc&limit=50", { headers: this.headers });
+            if(!res.ok) return [];
+            return await res.json();
+        } catch(e) { return []; }
+    }
+
+    async logAction(action, details) {
+        try {
+            // We assume email is stored in localStorage or decoded from JWT. For simplicity:
+            const email = localStorage.getItem('htl_admin_email') || 'Admin';
+            await fetch("https://gvigrkrlymrllfatuinw.supabase.co/rest/v1/audit_logs", {
+                method: 'POST',
+                headers: this.headers,
+                body: JSON.stringify({ action, details, user_email: email })
+            });
+        } catch(e) {}
+    }
+// --- HELPER UTILS ---
     slugify(text) {
-        return text
-            .toString()
-            .toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .replace(/[đĐ]/g, 'd')
-            .replace(/\s+/g, '-')
-            .replace(/[^\w\-]+/g, '')
-            .replace(/\-\-+/g, '-')
-            .replace(/^-+/, '')
-            .replace(/-+$/, '');
+        return text.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd').replace(/\s+/g, '-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-').replace(/^-+/, '').replace(/-+$/, '');
     }
 
-    exportContactsCSV() {
-        const contacts = this.getContacts();
-        if (contacts.length === 0) {
+    async exportContactsCSV() {
+        const contacts = await this.getContacts();
+        if (!contacts || contacts.length === 0) {
             alert('Chưa có dữ liệu liên hệ để xuất file!');
             return;
         }
@@ -254,10 +280,10 @@ class HTLDatabaseManager {
         let csvContent = "\uFEFFHọ và tên,Email,Chủ đề,Nội dung,Trạng thái,Thời gian\n";
         contacts.forEach(c => {
             const row = [
-                `"${c.name.replace(/"/g, '""')}"`,
-                `"${c.email.replace(/"/g, '""')}"`,
-                `"${c.subject.replace(/"/g, '""')}"`,
-                `"${c.message.replace(/"/g, '""')}"`,
+                `"${(c.name||'').replace(/"/g, '""')}"`,
+                `"${(c.email||'').replace(/"/g, '""')}"`,
+                `"${(c.subject||'').replace(/"/g, '""')}"`,
+                `"${(c.message||'').replace(/"/g, '""')}"`,
                 `"${c.status}"`,
                 `"${c.created_at}"`
             ].join(",");
@@ -275,5 +301,12 @@ class HTLDatabaseManager {
     }
 }
 
-// Khởi tạo instance toàn cục
 window.HTLDatabase = new HTLDatabaseManager();
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Hoàng Thế Long Admin Dashboard Controller Logic
  */
 
@@ -6,26 +6,68 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. DANG NHAP BAO MAT
     const loginScreen = document.getElementById('loginScreen');
     const loginForm = document.getElementById('loginForm');
-    const adminPasswordInput = document.getElementById('adminPassword');
+    const loginError = document.getElementById('loginError');
+    // Xử lý callback từ Google OAuth
+    if (window.HTLDatabase) window.HTLDatabase.checkOAuthCallback();
 
-    // Kiểm tra session đã đăng nhập chưa
-    if (sessionStorage.getItem('htl_admin_logged') === 'true') {
-        loginScreen.style.display = 'none';
+    const btnGoogleLogin = document.getElementById('btnGoogleLogin');
+    if (btnGoogleLogin) {
+        btnGoogleLogin.addEventListener('click', () => {
+            window.HTLDatabase.loginWithGoogle();
+        });
+    }
+
+
+    function showDashboard() {
+        if (loginScreen) loginScreen.style.display = 'none';
         initDashboard();
     }
 
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const pass = adminPasswordInput.value.trim();
-        if (pass === 'admin123' || pass === 'admin' || pass === '123456') {
-            sessionStorage.setItem('htl_admin_logged', 'true');
-            loginScreen.style.display = 'none';
-            initDashboard();
-        } else {
-            alert('Mật khẩu quản trị không chính xác!');
-        }
-    });
+    // Nếu đã đăng nhập rồi thì vào thẳng Dashboard
+    if (window.HTLDatabase && window.HTLDatabase.isAuthenticated()) {
+        showDashboard();
+    } else if (sessionStorage.getItem('htl_admin_local') === 'true') {
+        showDashboard();
+    }
 
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+
+            e.preventDefault();
+            const email = document.getElementById('adminEmail') ? document.getElementById('adminEmail').value.trim() : '';
+            const pwd = document.getElementById('adminPassword') ? document.getElementById('adminPassword').value : '';
+            const btn = loginForm.querySelector('button[type="submit"]');
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý...';
+            if (loginError) loginError.style.display = 'none';
+
+            // Thử đăng nhập Supabase trước
+            let loggedIn = false;
+            try {
+                const res = await window.HTLDatabase.login(email, pwd);
+                if (res.success) loggedIn = true;
+            } catch(e) {}
+
+            // Mật khẩu dự phòng cục bộ (nếu Supabase chưa cấu hình xong)
+            const LOCAL_PASS = 'HoangLong@2026';
+            if (!loggedIn && pwd === LOCAL_PASS) {
+                sessionStorage.setItem('htl_admin_local', 'true');
+                loggedIn = true;
+            }
+
+            if (loggedIn) {
+                showDashboard();
+            } else {
+                if (loginError) { loginError.textContent = 'Sai email hoặc mật khẩu!'; loginError.style.display = 'block'; }
+                if (btn) btn.innerHTML = originalText;
+            }
+        });
+    }
+
+    const btnLogout = document.getElementById('btnLogout');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', () => { window.HTLDatabase.logout(); });
+    }
     // 2. CHUYEN TAB SIDEBAR
     const menuItems = document.querySelectorAll('.menu-item');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -62,12 +104,12 @@ document.addEventListener('DOMContentLoaded', () => {
         renderStats();
         renderLeads();
         renderBlogs();
-        renderProjects();
+        renderProjects(); renderTeam(); renderAudit();
     }
 
     // RENDER THONG KE
-    function renderStats() {
-        const stats = window.HTLAIEngine ? window.HTLAIEngine.getDashboardStats() : { total_leads: 0, new_leads: 0, total_blogs: 0, total_projects: 0 };
+    async function renderStats() {
+        const stats = window.HTLAIEngine ? await window.HTLAIEngine.getDashboardStats() : { total_leads: 0, new_leads: 0, total_blogs: 0, total_projects: 0 };
         document.getElementById('statTotalLeads').textContent = stats.total_leads;
         document.getElementById('statNewLeads').textContent = stats.new_leads;
         document.getElementById('statTotalBlogs').textContent = stats.total_blogs;
@@ -75,8 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // RENDER LEADS
-    function renderLeads() {
-        const contacts = window.HTLDatabase.getContacts();
+    async function renderLeads() {
+        const contacts = await window.HTLDatabase.getContacts();
         const recentTable = document.getElementById('recentLeadsTable');
         const fullTable = document.getElementById('fullLeadsTable');
 
@@ -121,8 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // RENDER BLOGS
-    function renderBlogs() {
-        const blogs = window.HTLDatabase.getBlogs();
+    async function renderBlogs() {
+        const blogs = await window.HTLDatabase.getBlogs();
         const blogsTable = document.getElementById('blogsTable');
         if (!blogsTable) return;
 
@@ -143,9 +185,23 @@ document.addEventListener('DOMContentLoaded', () => {
             `).join('');
     }
 
-    // RENDER PROJECTS
-    function renderProjects() {
-        const projects = window.HTLDatabase.getProjects();
+    
+    async function renderTeam() {
+        const team = await window.HTLDatabase.getTeamMembers();
+        const table = document.getElementById('teamTable');
+        if(!table) return;
+        table.innerHTML = team.length === 0 ? '<tr><td colspan="5" style="text-align:center;">Chưa có nhân viên nào. Hãy thêm trong Supabase!</td></tr>' : team.map(u => `<tr><td><strong>${escapeHtml(u.name)}</strong></td><td>${escapeHtml(u.email)}</td><td><span class="status-badge badge-new">${escapeHtml(u.role)}</span></td><td><span class="status-badge badge-completed">${u.status}</span></td><td><button class="btn-admin btn-admin-danger" onclick="alert('Tính năng khóa đang phát triển')">Khóa</button></td></tr>`).join('');
+    }
+
+    async function renderAudit() {
+        const logs = await window.HTLDatabase.getAuditLogs();
+        const table = document.getElementById('auditTable');
+        if(!table) return;
+        table.innerHTML = logs.length === 0 ? '<tr><td colspan="4" style="text-align:center;">Chưa có hoạt động nào</td></tr>' : logs.map(l => `<tr><td>${new Date(l.created_at).toLocaleString('vi-VN')}</td><td><strong>${escapeHtml(l.user_email)}</strong></td><td><span class="status-badge badge-processing">${escapeHtml(l.action)}</span></td><td>${escapeHtml(l.details)}</td></tr>`).join('');
+    }
+// RENDER PROJECTS
+    async function renderProjects() {
+        const projects = await window.HTLDatabase.getProjects();
         const projectsTable = document.getElementById('projectsTable');
         if (!projectsTable) return;
 
@@ -165,19 +221,39 @@ document.addEventListener('DOMContentLoaded', () => {
             `).join('');
     }
 
-    // FORM THEM BLOG THU CONG
+    
+    // INITIALIZE QUILL EDITOR
+    let quillBlog;
+    if (document.getElementById('blogEditor')) {
+        quillBlog = new Quill('#blogEditor', {
+            theme: 'snow',
+            modules: { toolbar: [ [{ header: [1,2,3,false] }], ['bold','italic','underline','strike'], ['blockquote','code-block'], [{list:'ordered'},{list:'bullet'}], [{align:[]}], ['link','image','video'], ['clean'] ] }
+        });
+    }
+
+    
+    // UTILS SLUG
+    function generateSlug(text) { return text.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd').replace(/\s+/g, '-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-').replace(/^-+/, '').replace(/-+$/, ''); }
+    if (document.getElementById('blogTitle') && document.getElementById('blogSlug')) { document.getElementById('blogTitle').addEventListener('input', function(e) { document.getElementById('blogSlug').value = generateSlug(e.target.value); if (!document.getElementById('blogMetaTitle').value) { document.getElementById('blogMetaTitle').value = e.target.value; } }); }
+    if (document.getElementById('projTitle') && document.getElementById('projSlug')) { document.getElementById('projTitle').addEventListener('input', function(e) { document.getElementById('projSlug').value = generateSlug(e.target.value); if (!document.getElementById('projMetaTitle').value) { document.getElementById('projMetaTitle').value = e.target.value; } }); }
+// FORM THEM BLOG THU CONG
     const createBlogForm = document.getElementById('createBlogForm');
     if (createBlogForm) {
-        createBlogForm.addEventListener('submit', (e) => {
+        createBlogForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const title = document.getElementById('blogTitle').value;
             const category = document.getElementById('blogCategory').value;
             const image_url = document.getElementById('blogImage').value;
-            const content = document.getElementById('blogContent').value;
+            const content = quillBlog ? quillBlog.root.innerHTML : document.getElementById('blogContent').value;
 
-            window.HTLAIEngine.publishBlog({ title, category, cover_image: image_url, content });
+            const slug = document.getElementById('blogSlug') ? document.getElementById('blogSlug').value : '';
+            const meta_title = document.getElementById('blogMetaTitle') ? document.getElementById('blogMetaTitle').value : '';
+            const meta_description = document.getElementById('blogMetaDesc') ? document.getElementById('blogMetaDesc').value : '';
+
+            await window.HTLAIEngine.publishBlog({ title, category, cover_image: image_url, content, slug, meta_title, meta_description });
             createBlogForm.reset();
-            alert('Bài viết đã được xuất bản ĐĂNG NGAY thành công!');
+            if (quillBlog) quillBlog.setContents([]);
+            alert('Bài viết đã được xuất bản thành công!'); window.HTLDatabase.logAction('Đăng Bài viết', 'Tiêu đề: ' + title);
             initDashboard();
         });
     }
@@ -185,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // FORM THEM PROJECT THU CONG
     const createProjectForm = document.getElementById('createProjectForm');
     if (createProjectForm) {
-        createProjectForm.addEventListener('submit', (e) => {
+        createProjectForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const title = document.getElementById('projTitle').value;
             const category = document.getElementById('projCategory').value;
@@ -194,9 +270,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const image_url = document.getElementById('projImage').value;
             const description = document.getElementById('projDesc').value;
 
-            window.HTLAIEngine.publishProject({ title, category, metric_value, metric_label, image_url, description });
+            const slug = document.getElementById('projSlug') ? document.getElementById('projSlug').value : '';
+            const meta_title = document.getElementById('projMetaTitle') ? document.getElementById('projMetaTitle').value : '';
+            const meta_description = document.getElementById('projMetaDesc') ? document.getElementById('projMetaDesc').value : '';
+
+            await window.HTLAIEngine.publishProject({ title, category, metric_value, metric_label, image_url, description, slug, meta_title, meta_description });
             createProjectForm.reset();
-            alert('Dự án Portfolio đã được đăng thành công!');
+            alert('Dự án Portfolio đã được đăng thành công!'); window.HTLDatabase.logAction('Đăng Dự án', 'Tiêu đề: ' + title);
             initDashboard();
         });
     }
@@ -204,40 +284,39 @@ document.addEventListener('DOMContentLoaded', () => {
     // QUICK AI PUBLISH TEST
     const btnQuickAIPublish = document.getElementById('btnQuickAIPublish');
     if (btnQuickAIPublish) {
-        btnQuickAIPublish.addEventListener('click', () => {
+        btnQuickAIPublish.addEventListener('click', async () => {
             btnQuickAIPublish.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> AI Đang Biên Tập & Đăng...';
+            
+            const sampleTitles = [
+                "Xây Dựng Hệ Thống Lead Funnel Tự Động Với AI Agent 2026",
+                "Bí Quyết Ứng Dụng Midjourney Sáng Tạo Ấn Phẩm Marketing Độc Quyền",
+                "Cách Tối Ưu Chi Phí Quảng Cáo Facebook Bằng Phân Tích Data Dữ Liệu"
+            ];
+            const randomTitle = sampleTitles[Math.floor(Math.random() * sampleTitles.length)];
+
+            await window.HTLAIEngine.publishBlog({
+                title: randomTitle,
+                category: 'AI Automation',
+                content: `<p>Đây là bài viết được AI Agent sáng tạo và tự động ĐĂNG NGAY tức thì lên CSDL website mà không cần qua thao tác admin thủ công.</p><h3>Lợi ích cốt lõi</h3><p>- Tiết kiệm 95% thời gian đăng bài.<br>- Đồng bộ nội dung đa kênh tự động.</p>`,
+                cover_image: 'https://images.unsplash.com/photo-1677442136019-21780efad99a'
+            });
+
+            btnQuickAIPublish.innerHTML = '<i class="fa-solid fa-check"></i> Đã Đăng Thành Công 1 Bài Viết Mới!';
+            initDashboard();
+
             setTimeout(() => {
-                const sampleTitles = [
-                    "Xây Dựng Hệ Thống Lead Funnel Tự Động Với AI Agent 2026",
-                    "Bí Quyết Ứng Dụng Midjourney Sáng Tạo Ấn Phẩm Marketing Độc Quyền",
-                    "Cách Tối Ưu Chi Phí Quảng Cáo Facebook Bằng Phân Tích Data Dữ Liệu"
-                ];
-                const randomTitle = sampleTitles[Math.floor(Math.random() * sampleTitles.length)];
-
-                window.HTLAIEngine.publishBlog({
-                    title: randomTitle,
-                    category: 'AI Automation',
-                    content: `<p>Đây là bài viết được AI Agent sáng tạo và tự động ĐĂNG NGAY tức thì lên CSDL website mà không cần qua thao tác admin thủ công.</p><h3>Lợi ích cốt lõi</h3><p>- Tiết kiệm 95% thời gian đăng bài.<br>- Đồng bộ nội dung đa kênh tự động.</p>`,
-                    cover_image: 'https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=800&q=80'
-                });
-
-                btnQuickAIPublish.innerHTML = '<i class="fa-solid fa-check"></i> Đã Đăng Thành Công 1 Bài Viết Mới!';
-                initDashboard();
-
-                setTimeout(() => {
-                    btnQuickAIPublish.innerHTML = '<i class="fa-solid fa-robot"></i> Tạo & Đăng Bài SEO Ngay Bằng AI';
-                }, 3000);
-            }, 800);
+                btnQuickAIPublish.innerHTML = '<i class="fa-solid fa-robot"></i> Tạo & Đăng Bài SEO Ngay Bằng AI';
+            }, 3000);
         });
     }
 
     // AI API TEST FORM
     const aiApiTestForm = document.getElementById('aiApiTestForm');
     if (aiApiTestForm) {
-        aiApiTestForm.addEventListener('submit', (e) => {
+        aiApiTestForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const prompt = document.getElementById('aiTestPrompt').value;
-            window.HTLAIEngine.publishBlog({
+            await window.HTLAIEngine.publishBlog({
                 title: prompt,
                 category: 'AI Generated',
                 content: `<p>Nội dung tự động hóa dựa trên câu lệnh: <strong>${escapeHtml(prompt)}</strong>.</p>`
@@ -248,28 +327,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // UTILITY FUNCTIONS
-    window.updateLeadStatus = function(id, status) {
-        window.HTLDatabase.updateContactStatus(id, status);
+    window.updateLeadStatus = async function(id, status) {
+        await window.HTLDatabase.updateContactStatus(id, status); window.HTLDatabase.logAction('Cập nhật Liên hệ', 'Chuyển trạng thái: ' + status);
         initDashboard();
     };
 
-    window.deleteLead = function(id) {
+    window.deleteLead = async function(id) {
         if (confirm('Bạn có chắc muốn xóa lead này?')) {
-            window.HTLDatabase.deleteContact(id);
+            await window.HTLDatabase.deleteContact(id); window.HTLDatabase.logAction('Xóa Liên hệ', 'ID: ' + id);
             initDashboard();
         }
     };
 
-    window.deleteBlogArticle = function(id) {
+    window.deleteBlogArticle = async function(id) {
         if (confirm('Bạn có chắc muốn xóa bài viết này?')) {
-            window.HTLDatabase.deleteBlog(id);
+            await window.HTLDatabase.deleteBlog(id); window.HTLDatabase.logAction('Xóa Bài viết', 'ID: ' + id);
             initDashboard();
         }
     };
 
-    window.deleteProjectCard = function(id) {
+    window.deleteProjectCard = async function(id) {
         if (confirm('Bạn có chắc muốn xóa dự án này?')) {
-            window.HTLDatabase.deleteProject(id);
+            await window.HTLDatabase.deleteProject(id); window.HTLDatabase.logAction('Xóa Dự án', 'ID: ' + id);
             initDashboard();
         }
     };
@@ -286,3 +365,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 });
+
+
+
+
+
+
