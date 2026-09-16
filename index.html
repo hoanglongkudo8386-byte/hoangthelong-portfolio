@@ -1,13 +1,21 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hoàng Thế Long - AI-Driven Marketer | Automation Specialist</title>
-    <meta name="description" content="Hoàng Thế Long - AI-Driven Marketer & Automation Specialist. Tăng x3 hiệu suất marketing bằng AI, Data và tự động hóa.">
-    <meta property="og:title" content="Hoàng Thế Long - AI-Driven Marketer">
-    <meta property="og:description" content="Dùng Dữ liệu để ra quyết định - Dùng AI để x3 hiệu suất marketing.">
+    <meta name="google-site-verification" content="baFWG1eSoRsdZ0fORF4y6sAImBKU4OthEJZFu4fW2ps" />
+    <title>Hoàng Thế Long | Chuyên gia Digital Marketing & AI Automation</title>
+    <meta name="description" content="Hoàng Thế Long - Chuyên gia Digital Marketing & AI Automation. Giải pháp tăng tốc doanh thu và hiệu suất bằng dữ liệu và trí tuệ nhân tạo. Liên hệ ngay!">
+    <link rel="canonical" href="https://hoangthelong.io.vn/" />
+    <meta property="og:title" content="Hoàng Thế Long | Chuyên gia Digital Marketing & AI Automation">
+    <meta property="og:description" content="Hoàng Thế Long - Chuyên gia Digital Marketing & AI Automation. Giải pháp tăng tốc doanh thu và hiệu suất bằng dữ liệu và trí tuệ nhân tạo. Liên hệ ngay!">
+    <meta property="og:url" content="https://hoangthelong.io.vn/">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="https://hoangthelong.io.vn/assets/images/og-image.webp">
+    
+    
+    
+    
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,8 +34,39 @@
         .cta-section { text-align: center; padding: 5rem 0; background: var(--bg-card); border-radius: var(--border-radius); margin: 4rem 0; position: relative; overflow: hidden; }
         .cta-section::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%); z-index: 0; }
         .cta-content { position: relative; z-index: 1; }
+
+        /* Custom Split Hero Styles */
+        .hero-split-container { display: flex; align-items: center; justify-content: space-between; gap: 4rem; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        .hero-split-text { flex: 1; max-width: 600px; }
+        .hero-split-visual { flex: 1; display: flex; justify-content: center; position: relative; }
+        
+        .hero-status-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); color: var(--accent-2); padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.9rem; font-weight: 500; margin-bottom: 1.5rem; }
+        .pulse-dot { width: 8px; height: 8px; background: var(--accent-2); border-radius: 50%; box-shadow: 0 0 10px var(--accent-2); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 212, 255, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); } }
+        
+        .hero-typing-wrap { font-size: 1.5rem; color: var(--text-secondary); margin-bottom: 1.5rem; font-family: 'Space Grotesk', sans-serif; font-weight: 500; }
+        .typed-text { color: var(--accent-1); font-weight: 700; text-shadow: var(--glow-purple); }
+        .cursor { display: inline-block; width: 3px; background-color: var(--accent-1); animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        
+        .hero-avatar-wrapper { position: relative; width: 380px; height: 480px; border-radius: 20px; background: var(--gradient-primary); padding: 4px; box-shadow: var(--glow-purple); }
+        .hero-avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; object-position: center 10%; }
+        
+        .floating-badge { position: absolute; background: rgba(26, 26, 40, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 0.8rem 1.2rem; border-radius: 12px; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; color: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 10; animation: float 4s ease-in-out infinite; }
+        .floating-badge i { color: var(--accent-2); font-size: 1.2rem; }
+        .badge-top { top: 40px; left: -40px; }
+        .badge-bottom { bottom: 60px; right: -30px; animation-delay: 2s; }
+        
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        
+        @media (max-width: 992px) {
+            .hero-split-container { flex-direction: column; text-align: center; gap: 4rem; padding-top: 2rem; }
+            .hero-split-text { margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+            .hero-social, .hero-ctas { justify-content: center; }
+            .badge-top { left: -10px; }
+            .badge-bottom { right: -10px; }
+        }
     </style>
-    <meta name="google-site-verification" content="baFWG1eSoRsdZ0fORF4y6sAImBKU4OthEJZFu4fW2ps" />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT5F1JJNJ4"></script>
     <script>
@@ -37,20 +76,31 @@
 
       gtag('config', 'G-FT5F1JJNJ4');
     </script>
-</head>
-<body class="dark-mode page-transition">
 
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Hoàng Thế Long",
+      "url": "https://hoangthelong.io.vn/",
+      "description": "Hoàng Thế Long - Chuyên gia Digital Marketing & AI Automation. Giải pháp tăng tốc doanh thu và hiệu suất bằng dữ liệu và trí tuệ nhân tạo. Liên hệ ngay!"
+    }
+    </script>
+    </head>
+<body class="dark-mode page-transition" style="background-image: linear-gradient(rgba(10,10,15,0.9), rgba(10,10,15,0.95)), url('assets/images/ai_marketing_illustration.jpg'); background-size: cover; background-attachment: fixed; background-position: center;">
+
+    <!-- NAVBAR -->
     <!-- NAVBAR -->
     <nav id="navbar">
         <div class="nav-container">
             <a class="nav-logo" href="index.html">HTL</a>
             <div class="nav-links">
                 <a class="nav-link active" href="index.html">Trang chủ</a>
-                <a class="nav-link" href="about.html">Giới thiệu</a>
-                <a class="nav-link" href="services.html">Dịch vụ</a>
-                <a class="nav-link" href="portfolio.html">Dự án</a>
-                <a class="nav-link" href="blog.html">Blog</a>
-                <a class="nav-link" href="contact.html">Liên hệ</a>
+                <a class="nav-link " href="about.html">Giới thiệu</a>
+                <a class="nav-link " href="services.html">Dịch vụ</a>
+                <a class="nav-link " href="portfolio.html">Dự án</a>
+                <a class="nav-link " href="blog.html">Blog</a>
+                <a class="nav-link " href="contact.html">Liên hệ</a>
             </div>
             <div class="hamburger">
                 <span></span><span></span><span></span>
@@ -60,12 +110,13 @@
 
     <main>
         <!-- HERO -->
-        <section class="section" id="hero" style="min-height: 100vh; display: flex; align-items: center;">
-            <div class="hero-content reveal">
-                <div class="hero-text">
-                    <h1 class="hero-title">Hoàng Thế Long</h1>
-                    <p class="hero-subtitle">Digital Marketer · AI & Automation Specialist</p>
-                    <p class="hero-tagline">"Dùng Dữ liệu để ra quyết định — Dùng AI để x3 hiệu suất"</p>
+        <section class="section" id="hero" style="min-height: 100vh; display: flex; align-items: center; padding-top: 120px; padding-bottom: 60px;">
+            <div class="hero-split-container">
+                <div class="hero-split-text reveal-left">
+                    <div class="hero-status-badge"><span class="pulse-dot"></span>Đang nhận dự án mới</div>
+                    <h1 class="hero-title" style="font-size: clamp(3rem, 6vw, 4.5rem); margin-bottom: 0.5rem; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Hoàng Thế Long</h1>
+                    <div class="hero-typing-wrap">Tôi là <span class="typed-text"></span><span class="cursor">&nbsp;</span></div>
+                    <p class="hero-tagline" style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.1rem; max-width: 90%;">"Dùng Dữ liệu để ra quyết định — Dùng AI để x3 hiệu suất marketing"</p>
                     <div class="hero-ctas">
                         <a href="services.html" class="btn btn-primary">Khám phá giải pháp</a>
                         <a href="portfolio.html" class="btn btn-secondary">Xem dự án</a>
@@ -73,6 +124,13 @@
                     <div class="hero-social">
                         <a href="https://facebook.com" target="_blank" rel="noopener" class="social-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
                         <a href="https://zalo.me/0358500914" target="_blank" rel="noopener" class="social-link" aria-label="Zalo"><i class="fa-solid fa-comments"></i></a>
+                    </div>
+                </div>
+                <div class="hero-split-visual reveal-right">
+                    <div class="hero-avatar-wrapper">
+                        <img src="assets/images/avatar.jpg" alt="Hoàng Thế Long" class="hero-avatar-img">
+                        <div class="floating-badge badge-top"><i class="fa-solid fa-robot"></i> AI Driven</div>
+                        <div class="floating-badge badge-bottom"><i class="fa-solid fa-chart-line"></i> Data Expert</div>
                     </div>
                 </div>
             </div>
@@ -119,6 +177,7 @@
     </main>
 
     <!-- FOOTER -->
+    <!-- FOOTER -->
     <footer id="footer">
         <div class="footer-content">
             <p class="footer-text">© 2026 Hoàng Thế Long. All rights reserved.</p>
@@ -140,6 +199,41 @@
         <i class="fa-solid fa-arrow-up"></i>
     </button>
 
+    <script>
+        const typedTextSpan = document.querySelector(".typed-text");
+        const textArray = ["Digital Marketer", "AI & Automation Specialist", "Growth Hacker", "Tech Enthusiast"];
+        const typingDelay = 100;
+        const erasingDelay = 50;
+        const newTextDelay = 2000;
+        let textArrayIndex = 0;
+        let charIndex = 0;
+
+        function type() {
+            if (charIndex < textArray[textArrayIndex].length) {
+                typedTextSpan.textContent += textArray[textArrayIndex].charAt(charIndex);
+                charIndex++;
+                setTimeout(type, typingDelay);
+            } else {
+                setTimeout(erase, newTextDelay);
+            }
+        }
+
+        function erase() {
+            if (charIndex > 0) {
+                typedTextSpan.textContent = textArray[textArrayIndex].substring(0, charIndex - 1);
+                charIndex--;
+                setTimeout(erase, erasingDelay);
+            } else {
+                textArrayIndex++;
+                if (textArrayIndex >= textArray.length) textArrayIndex = 0;
+                setTimeout(type, typingDelay + 1100);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            if (typedTextSpan) setTimeout(type, newTextDelay + 250);
+        });
+    </script>
 </body>
 </html>
 

@@ -1,18 +1,18 @@
 /* Design system + base styles */
 :root {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #f1f5f9;
-  --bg-card: #ffffff;
-  --bg-card-hover: #ffffff;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --accent-1: #4f46e5; /* Indigo */
-  --accent-2: #ec4899; /* Pink */
-  --accent-3: #06b6d4; /* Cyan */
-  --gradient-primary: linear-gradient(135deg, #4f46e5, #ec4899);
-  --gradient-hot: linear-gradient(135deg, #f59e0b, #ec4899);
-  --glow-purple: 0 10px 25px rgba(79, 70, 229, 0.25);
-  --glow-cyan: 0 10px 25px rgba(236, 72, 153, 0.25);
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-card: #1a1a28;
+  --bg-card-hover: #222233;
+  --text-primary: #f0f0f5;
+  --text-secondary: #8888aa;
+  --accent-1: #6c63ff; /* Neon Purple */
+  --accent-2: #00d4ff; /* Cyan */
+  --accent-3: #00ff88; /* Green */
+  --gradient-primary: linear-gradient(135deg, #6c63ff, #00d4ff);
+  --gradient-hot: linear-gradient(135deg, #f59e0b, #ff6b9d);
+  --glow-purple: 0 10px 25px rgba(108, 99, 255, 0.4);
+  --glow-cyan: 0 10px 25px rgba(0, 212, 255, 0.4);
   --border-radius: 12px;
   --transition: all 0.3s ease;
   --container-width: 1200px;

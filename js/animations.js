@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // 1 & 2. Scroll reveal animations
-    const reveals = document.querySelectorAll('.reveal');
+    const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
     
     const revealOptions = {
         threshold: 0.15,
