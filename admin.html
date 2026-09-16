@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -176,21 +176,45 @@
     </div>
     
     <script>
-        if (sessionStorage.getItem('htl_admin_auth') === 'true') {
+        // Kiểm tra nếu đã đăng nhập qua Supabase token trước đó
+        if (localStorage.getItem('htl_access_token')) {
             document.getElementById('htl-login-overlay').style.display = 'none';
         }
 
-        function checkAdminLogin() {
-            const email = document.getElementById('adminEmail').value;
+        const btnLogin = document.querySelector('.btn-login');
+
+        async function checkAdminLogin() {
+            const email = document.getElementById('adminEmail').value.trim();
             const pwd = document.getElementById('adminPwd').value;
             const errorMsg = document.getElementById('loginErrorMsg');
-            
-            if ((email === 'admin@hoangthelong.com' || email === 'admin') && pwd === 'Long@2026') {
-                sessionStorage.setItem('htl_admin_auth', 'true');
-                document.getElementById('htl-login-overlay').style.display = 'none';
-                errorMsg.style.display = 'none';
-            } else {
+
+            if (!email || !pwd) {
+                errorMsg.textContent = 'Vui lòng nhập đủ email và mật khẩu!';
                 errorMsg.style.display = 'block';
+                return;
+            }
+
+            btnLogin.textContent = 'Đang xác thực...';
+            btnLogin.disabled = true;
+            errorMsg.style.display = 'none';
+
+            try {
+                // Gọi Supabase Auth để xác thực
+                const result = await HTLdb.login(email, pwd);
+                if (result.success) {
+                    sessionStorage.setItem('htl_admin_auth', 'true');
+                    document.getElementById('htl-login-overlay').style.display = 'none';
+                } else {
+                    errorMsg.textContent = result.message || 'Sai email hoặc mật khẩu!';
+                    errorMsg.style.display = 'block';
+                    btnLogin.textContent = 'Đăng Nhập Quản Trị ➜';
+                    btnLogin.disabled = false;
+                }
+            } catch(e) {
+                errorMsg.textContent = 'Lỗi kết nối. Vui lòng thử lại!';
+                errorMsg.style.display = 'block';
+                btnLogin.textContent = 'Đăng Nhập Quản Trị ➜';
+                btnLogin.disabled = false;
             }
         }
         
