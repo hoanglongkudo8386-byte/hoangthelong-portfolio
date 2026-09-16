@@ -23,27 +23,7 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT5F1JJNJ4"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-FT5F1JJNJ4');
-    </script>
-<meta name="google-site-verification" content="baFWG1eSoRsdZ0fORF4y6sAImBKU4OthEJZFu4fW2ps" />
-
-    <script>
-        // Lớp bảo mật cơ bản cho trang Admin
-        if (!sessionStorage.getItem('htl_admin_auth')) {
-            const pwd = prompt("🔒 Vui lòng nhập mật khẩu quản trị:");
-            if (pwd === "Long@2026") {
-                sessionStorage.setItem('htl_admin_auth', 'true');
-            } else {
-                alert("❌ Sai mật khẩu! Đang chuyển hướng về trang chủ...");
-                window.location.href = "index.html";
-            }
-        }
-    </script>
+    
 
 </head>
 <body class="admin-body">
