@@ -1,6 +1,6 @@
 ﻿/**
- * Hoàng Thế Long Website - Supabase REST API Data Abstraction Layer
- * Đã kết nối với Database Supabase thực tế.
+ * HoÃ ng Tháº¿ Long Website - Supabase REST API Data Abstraction Layer
+ * ÄÃ£ káº¿t ná»‘i vá»›i Database Supabase thá»±c táº¿.
  */
 
 const SUPABASE_CONFIG = {
@@ -19,7 +19,7 @@ const SUPABASE_CONFIG = {
 
 class HTLDatabaseManager {
     constructor() {
-        console.log('✅ HTL Database Initialized (Supabase Connected)');
+        console.log('âœ… HTL Database Initialized (Supabase Connected)');
     }
 
     
@@ -38,7 +38,7 @@ class HTLDatabaseManager {
             if (accessToken) {
                 localStorage.setItem('htl_access_token', accessToken);
                 localStorage.setItem('htl_admin_email', 'Google_OAuth_User');
-                window.location.hash = ''; // Xóa hash đi cho gọn
+                window.location.hash = ''; // XÃ³a hash Ä‘i cho gá»n
             }
         }
     }
@@ -54,10 +54,10 @@ async login(email, password) {
                 localStorage.setItem('htl_access_token', data.access_token); localStorage.setItem('htl_admin_email', email);
                 return { success: true };
             }
-            return { success: false, message: data.error_description || 'Sai thông tin đăng nhập' };
+            return { success: false, message: data.error_description || 'Sai thÃ´ng tin Ä‘Äƒng nháº­p' };
         } catch (e) {
-            console.error('Lỗi đăng nhập:', e);
-            return { success: false, message: 'Lỗi máy chủ' };
+            console.error('Lá»—i Ä‘Äƒng nháº­p:', e);
+            return { success: false, message: 'Lá»—i mÃ¡y chá»§' };
         }
     }
 
@@ -72,20 +72,20 @@ async login(email, password) {
 // --- LEADS / CONTACTS ---
     async getContacts() {
         try {
-            const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/contacts?select=*&order=created_at.desc`, { headers: SUPABASE_CONFIG.headers });
+            const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/contacts?select=*&`, { headers: SUPABASE_CONFIG.headers });
             if (!res.ok) throw new Error('Network response was not ok');
             return await res.json();
         } catch (e) {
-            console.error('Lỗi lấy danh sách liên hệ:', e);
+            console.error('Lá»—i láº¥y danh sÃ¡ch liÃªn há»‡:', e);
             return [];
         }
     }
 
     async saveContact(contactData) {
         const payload = {
-            name: contactData.name || 'Khách hàng',
+            name: contactData.name || 'KhÃ¡ch hÃ ng',
             email: contactData.email || '',
-            subject: contactData.subject || 'Đăng ký tư vấn',
+            subject: contactData.subject || 'ÄÄƒng kÃ½ tÆ° váº¥n',
             message: contactData.message || '',
             status: 'new'
         };
@@ -97,7 +97,7 @@ async login(email, password) {
             });
             return await res.json();
         } catch (e) {
-            console.error('Lỗi lưu liên hệ:', e);
+            console.error('Lá»—i lÆ°u liÃªn há»‡:', e);
             return null;
         }
     }
@@ -111,7 +111,7 @@ async login(email, password) {
             });
             return await res.json();
         } catch (e) {
-            console.error('Lỗi cập nhật trạng thái:', e);
+            console.error('Lá»—i cáº­p nháº­t tráº¡ng thÃ¡i:', e);
             return null;
         }
     }
@@ -123,7 +123,7 @@ async login(email, password) {
                 headers: SUPABASE_CONFIG.headers
             });
         } catch (e) {
-            console.error('Lỗi xóa liên hệ:', e);
+            console.error('Lá»—i xÃ³a liÃªn há»‡:', e);
         }
     }
 
@@ -133,15 +133,15 @@ async login(email, password) {
             const res = await fetch("https://gvigrkrlymrllfatuinw.supabase.co/rest/v1/blogs?slug=eq." + slug + "&select=*&limit=1", { headers: SUPABASE_CONFIG.headers });
             const data = await res.json();
             return data.length > 0 ? data[0] : null;
-        } catch (e) { console.error('Lỗi lấy bài viết:', e); return null; }
+        } catch (e) { console.error('Lá»—i láº¥y bÃ i viáº¿t:', e); return null; }
     }
 
     async getBlogs() {
         try {
-            const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/blogs?select=*&order=created_at.desc`, { headers: SUPABASE_CONFIG.headers });
+            const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/blogs?select=*&order=published_at.desc`, { headers: SUPABASE_CONFIG.headers });
             return await res.json();
         } catch (e) {
-            console.error('Lỗi lấy bài viết:', e);
+            console.error('Lá»—i láº¥y bÃ i viáº¿t:', e);
             return [];
         }
     }
@@ -170,7 +170,7 @@ async login(email, password) {
             });
             return await res.json();
         } catch (e) {
-            console.error('Lỗi lưu bài viết:', e);
+            console.error('Lá»—i lÆ°u bÃ i viáº¿t:', e);
             return null;
         }
     }
@@ -182,17 +182,17 @@ async login(email, password) {
                 headers: SUPABASE_CONFIG.headers
             });
         } catch (e) {
-            console.error('Lỗi xóa bài viết:', e);
+            console.error('Lá»—i xÃ³a bÃ i viáº¿t:', e);
         }
     }
 
     // --- PORTFOLIO PROJECTS ---
     async getProjects() {
         try {
-            const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/projects?select=*&order=created_at.desc`, { headers: SUPABASE_CONFIG.headers });
+            const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/projects?select=*&`, { headers: SUPABASE_CONFIG.headers });
             return await res.json();
         } catch (e) {
-            console.error('Lỗi lấy dự án:', e);
+            console.error('Lá»—i láº¥y dá»± Ã¡n:', e);
             return [];
         }
     }
@@ -205,7 +205,7 @@ async login(email, password) {
             image_url: projectData.image_url || 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8',
             description: projectData.description || '',
             metric_value: projectData.metric_value || '+100%',
-            metric_label: projectData.metric_label || 'Tăng trưởng',
+            metric_label: projectData.metric_label || 'TÄƒng trÆ°á»Ÿng',
             slug: projectData.slug || this.slugify(projectData.title || 'du-an-moi'),
             meta_title: projectData.meta_title || '',
             meta_description: projectData.meta_description || ''
@@ -219,7 +219,7 @@ async login(email, password) {
             });
             return await res.json();
         } catch (e) {
-            console.error('Lỗi lưu dự án:', e);
+            console.error('Lá»—i lÆ°u dá»± Ã¡n:', e);
             return null;
         }
     }
@@ -231,7 +231,7 @@ async login(email, password) {
                 headers: SUPABASE_CONFIG.headers
             });
         } catch (e) {
-            console.error('Lỗi xóa dự án:', e);
+            console.error('Lá»—i xÃ³a dá»± Ã¡n:', e);
         }
     }
 
@@ -239,7 +239,7 @@ async login(email, password) {
     // --- TEAM MEMBERS ---
     async getTeamMembers() {
         try {
-            const res = await fetch("https://gvigrkrlymrllfatuinw.supabase.co/rest/v1/team_members?select=*&order=created_at.desc", { headers: this.headers });
+            const res = await fetch("https://gvigrkrlymrllfatuinw.supabase.co/rest/v1/team_members?select=*&", { headers: this.headers });
             if(!res.ok) return [];
             return await res.json();
         } catch(e) { return []; }
@@ -248,7 +248,7 @@ async login(email, password) {
     // --- AUDIT LOGS ---
     async getAuditLogs() {
         try {
-            const res = await fetch("https://gvigrkrlymrllfatuinw.supabase.co/rest/v1/audit_logs?select=*&order=created_at.desc&limit=50", { headers: this.headers });
+            const res = await fetch("https://gvigrkrlymrllfatuinw.supabase.co/rest/v1/audit_logs?select=*&&limit=50", { headers: this.headers });
             if(!res.ok) return [];
             return await res.json();
         } catch(e) { return []; }
@@ -267,17 +267,17 @@ async login(email, password) {
     }
 // --- HELPER UTILS ---
     slugify(text) {
-        return text.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd').replace(/\s+/g, '-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-').replace(/^-+/, '').replace(/-+$/, '');
+        return text.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[Ä‘Ä]/g, 'd').replace(/\s+/g, '-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-').replace(/^-+/, '').replace(/-+$/, '');
     }
 
     async exportContactsCSV() {
         const contacts = await this.getContacts();
         if (!contacts || contacts.length === 0) {
-            alert('Chưa có dữ liệu liên hệ để xuất file!');
+            alert('ChÆ°a cÃ³ dá»¯ liá»‡u liÃªn há»‡ Ä‘á»ƒ xuáº¥t file!');
             return;
         }
 
-        let csvContent = "\uFEFFHọ và tên,Email,Chủ đề,Nội dung,Trạng thái,Thời gian\n";
+        let csvContent = "\uFEFFHá» vÃ  tÃªn,Email,Chá»§ Ä‘á»,Ná»™i dung,Tráº¡ng thÃ¡i,Thá»i gian\n";
         contacts.forEach(c => {
             const row = [
                 `"${(c.name||'').replace(/"/g, '""')}"`,
@@ -302,6 +302,7 @@ async login(email, password) {
 }
 
 window.HTLDatabase = new HTLDatabaseManager();
+
 
 
 
