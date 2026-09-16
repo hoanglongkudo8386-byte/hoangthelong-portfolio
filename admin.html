@@ -28,6 +28,178 @@
 </head>
 <body class="admin-body">
 
+    <!-- GIAO DIỆN ĐĂNG NHẬP ADMIN ĐẸP MẮT -->
+    <style>
+        #htl-login-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(240, 242, 245, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            color: #333;
+        }
+        .login-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 12px;
+            padding: 40px 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            text-align: center;
+            border: 1px solid #eaeaea;
+        }
+        .login-title {
+            color: #3b82f6;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 0 5px 0;
+            letter-spacing: 1px;
+        }
+        .login-subtitle {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+        .login-form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+        .login-form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #374151;
+        }
+        .login-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+        .login-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+        .btn-login:hover {
+            background: #2563eb;
+        }
+        .login-error {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            font-weight: 500;
+            display: none;
+        }
+        .login-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: #9ca3af;
+            font-size: 0.85rem;
+        }
+        .login-divider::before, .login-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .login-divider:not(:empty)::before { margin-right: .25em; }
+        .login-divider:not(:empty)::after { margin-left: .25em; }
+        
+        .btn-google {
+            width: 100%;
+            padding: 10px;
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background 0.2s;
+        }
+        .btn-google:hover {
+            background: #f9fafb;
+        }
+    </style>
+    
+    <div id="htl-login-overlay">
+        <div class="login-card">
+            <h2 class="login-title">HTL ADMIN</h2>
+            <p class="login-subtitle">Hệ Thống Quản Trị & AI Engine</p>
+            
+            <div class="login-form-group">
+                <label>Email quản trị</label>
+                <input type="email" id="adminEmail" class="login-input" placeholder="admin@hoangthelong.com">
+            </div>
+            
+            <div class="login-form-group">
+                <label>Mật khẩu</label>
+                <input type="password" id="adminPwd" class="login-input" placeholder="••••••••••••">
+            </div>
+            
+            <button class="btn-login" onclick="checkAdminLogin()">Đăng Nhập Quản Trị ➜</button>
+            <div id="loginErrorMsg" class="login-error">Sai email hoặc mật khẩu!</div>
+            
+            <div class="login-divider">HOẶC</div>
+            
+            <button class="btn-google" onclick="alert('Tính năng OAuth Google đang được bảo trì. Vui lòng đăng nhập bằng Email!')">
+                <i class="fa-brands fa-google" style="color: #ea4335;"></i> Đăng nhập bằng Google (OAuth)
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        if (sessionStorage.getItem('htl_admin_auth') === 'true') {
+            document.getElementById('htl-login-overlay').style.display = 'none';
+        }
+
+        function checkAdminLogin() {
+            const email = document.getElementById('adminEmail').value;
+            const pwd = document.getElementById('adminPwd').value;
+            const errorMsg = document.getElementById('loginErrorMsg');
+            
+            if ((email === 'admin@hoangthelong.com' || email === 'admin') && pwd === 'Long@2026') {
+                sessionStorage.setItem('htl_admin_auth', 'true');
+                document.getElementById('htl-login-overlay').style.display = 'none';
+                errorMsg.style.display = 'none';
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }
+        
+        document.getElementById('adminPwd').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') checkAdminLogin();
+        });
+    </script>
+
+
     <!-- 1. MAN HINH DANG NHAP -->
     <div class="login-screen" id="loginScreen">
         <div class="login-card">
