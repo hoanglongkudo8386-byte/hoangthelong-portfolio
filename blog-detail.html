@@ -197,11 +197,10 @@
             </div>
         </article>
 
-        <section class="related-articles" style="max-width: 800px; margin: 40px auto; padding-top: 20px; border-top: 1px solid var(--border-color);">
-            <h3>Bài viết liên quan</h3>
-            <ul style="list-style: none; padding-left: 0; margin-top: 15px;">
-                <li style="margin-bottom: 10px;"><a href="blog-detail.html" style="color: var(--accent-1);">Tương lai của AI trong Marketing</a></li>
-                <li style="margin-bottom: 10px;"><a href="blog-detail.html" style="color: var(--accent-1);">Làm thế nào để tăng tỷ lệ chuyển đổi?</a></li>
+        <section class="related-articles" style="max-width: 800px; margin: 40px auto; padding-top: 30px; border-top: 1px solid var(--border-color);">
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; color: var(--text-light); margin-bottom: 20px;"><i class="fa-solid fa-list" style="color: var(--accent-blue);"></i> Mục lục bài viết trên Blog</h3>
+            <ul id="related-articles-list" style="list-style: none; padding-left: 0; margin-top: 15px; display: grid; gap: 15px;">
+                <!-- Sẽ load tự động qua Javascript -->
             </ul>
         </section>
     </main>
@@ -217,16 +216,17 @@
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const slug = urlParams.get('slug');
+            const currentSlug = urlParams.get('slug');
 
-            if (!slug) {
+            if (!currentSlug) {
                 document.getElementById('loading-state').style.display = 'none';
                 document.getElementById('error-state').style.display = 'block';
                 return;
             }
 
-            // Fetch from Supabase
-            const blogData = await window.HTLDatabase.getBlogBySlug(slug);
+            // Lấy toàn bộ bài viết để tìm bài hiện tại & tạo mục lục
+            const blogs = await window.HTLDatabase.getBlogs();
+            const blogData = blogs.find(b => b.slug === currentSlug);
 
             if (!blogData) {
                 document.getElementById('loading-state').style.display = 'none';
@@ -238,10 +238,10 @@
             document.title = (blogData.meta_title || blogData.title) + " - Hoàng Thế Long";
             
             const metaDesc = blogData.meta_description || blogData.excerpt || "";
-            document.querySelector('meta[name="description"]').setAttribute("content", metaDesc);
-            document.querySelector('meta[property="og:title"]').setAttribute("content", blogData.meta_title || blogData.title);
-            document.querySelector('meta[property="og:description"]').setAttribute("content", metaDesc);
-            document.querySelector('meta[property="og:image"]').setAttribute("content", blogData.image_url);
+            document.querySelector('meta[name="description"]')?.setAttribute("content", metaDesc);
+            document.querySelector('meta[property="og:title"]')?.setAttribute("content", blogData.meta_title || blogData.title);
+            document.querySelector('meta[property="og:description"]')?.setAttribute("content", metaDesc);
+            document.querySelector('meta[property="og:image"]')?.setAttribute("content", blogData.image_url);
 
             // Render Content
             document.getElementById('renderCategory').textContent = blogData.category;
@@ -252,6 +252,22 @@
             
             // Render HTML directly into ql-editor
             document.getElementById('renderContent').innerHTML = blogData.content;
+
+            // Render Related Articles (Mục lục các bài khác)
+            const relatedList = document.getElementById('related-articles-list');
+            const otherBlogs = blogs.filter(b => b.slug !== currentSlug && b.status === 'published').slice(0, 5); // Lấy tối đa 5 bài
+            
+            if (otherBlogs.length > 0) {
+                relatedList.innerHTML = otherBlogs.map(b => `
+                    <li style="background: rgba(255,255,255,0.03); padding: 15px 20px; border-radius: 12px; transition: 0.3s; border-left: 3px solid transparent;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.borderLeft='3px solid var(--accent-blue)';" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.borderLeft='3px solid transparent';">
+                        <a href="blog-detail.html?slug=${b.slug}" style="color: var(--text-light); text-decoration: none; font-size: 1.1rem; font-weight: 500; display: block;">
+                            <i class="fa-solid fa-angle-right" style="color: var(--accent-blue); margin-right: 10px; font-size: 0.9em;"></i> ${b.title}
+                        </a>
+                    </li>
+                `).join('');
+            } else {
+                document.querySelector('.related-articles').style.display = 'none';
+            }
 
             // Show Content
             document.getElementById('loading-state').style.display = 'none';
